@@ -698,7 +698,7 @@ with tab3:
                 rain_analysis = f"Ghi nhận mưa lớn cục bộ xảy ra tại trạm <b>{max_station}</b> với lượng mưa tích lũy đạt <b>{max_val:.1f} mm</b> (lượng mưa trung bình toàn khu vực đạt {avg_rain:.1f} mm), nguy cơ gây dồn nước nhanh và ngập úng các vùng sản xuất nông nghiệp thấp trũng."
                 rain_recommendation = f"Yêu cầu <b>Phòng Quản lý nước</b> phối hợp chặt chẽ với <b>Chi nhánh vận hành khu vực {max_station}</b> khẩn trương rà soát mực nước các bể hút trạm bơm tiêu, chủ động hạ thấp nước đệm trên hệ thống và chuẩn bị phương án vận hành bơm tiêu động lực cưỡng bức nếu mực nước vượt mức báo động."
             else:
-                rain_analysis = f"Lượng mưa ghi nhận trên toàn tỉnh ở mức thấp, rải rác một số nơi, trung bình đạt <b>{avg_rain:.1f} mm</b>. Trạm mưa lớn nhất đo được tại <b>{max_station}</b> là <b>{max_val:.1f} mm</b>."
+                rain_analysis = f"Lượng mưa ghi nhận trên địa bàn phía Tây thành phố Hải Phòng ở mức thấp, rải rác một số nơi, trung bình đạt <b>{avg_rain:.1f} mm</b>. Trạm mưa lớn nhất đo được tại <b>{max_station}</b> là <b>{max_val:.1f} mm</b>."
                 rain_recommendation = "Đề nghị các chi nhánh chủ động phối hợp điều tiết đóng cống trữ ngọt trên toàn hệ thống kênh mương nội đồng phục vụ công tác tưới dưỡng. Theo dõi chặt chẽ bản tin thời tiết của đài khí tượng thủy văn để chủ động ứng phó."
         except Exception:
             rain_analysis = "Lượng mưa đo được trên hệ thống ở mức không đáng kể, thời tiết khô ráo thuận lợi cho vận hành tích trữ nước ngọt."
