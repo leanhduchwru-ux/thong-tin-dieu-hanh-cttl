@@ -541,7 +541,18 @@ with col_left:
     if not df_struct.empty:
         df_ops = df_struct[df_struct['parameter_name'].isin(['DoMo', 'LuuLuong'])]
         if not df_ops.empty:
-            df_ops_latest = df_ops.sort_values('timestamp').groupby(['structure_name', 'parameter_name']).last().reset_index()
+            df_ops_latest = df_ops.sort_values('timestamp').groupby(['structure_name', 'parameter_name']).last().reset_index().copy()
+            
+            # Khắc phục lưu lượng xả hiển thị số âm (lấy trị tuyệt đối)
+            def clean_negative_flow(row):
+                if row['parameter_name'] == 'LuuLuong' and row['value_str']:
+                    val_str = row['value_str'].strip()
+                    if val_str.startswith('-'):
+                        return val_str[1:].strip()
+                return row['value_str']
+                
+            df_ops_latest['value_str'] = df_ops_latest.apply(clean_negative_flow, axis=1)
+            
             df_ops_pivot = df_ops_latest.pivot(index='structure_name', columns='parameter_name', values='value_str').reset_index()
             df_ops_pivot.columns = ['Tên công trình', 'Độ mở cống (cm)', 'Lưu lượng xả (m3/s)']
             df_ops_pivot = df_ops_pivot.fillna("-")
