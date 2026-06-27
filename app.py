@@ -86,14 +86,26 @@ else:
     grid_color = "#e2e8f0"
     axis_color = "#475569"
 
-# Nhúng các thẻ meta Open Graph để hiển thị bản xem trước đẹp khi chia sẻ qua Zalo/Facebook
+# Nhúng các thẻ meta Open Graph để hiển thị bản xem trước đẹp khi chia sẻ qua Zalo/Facebook/Twitter
 st.markdown("""
 <head>
+    <!-- Thẻ Open Graph bắt buộc cho Zalo & Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://congtytnhhmtvktcttlhaiduong.streamlit.app/" />
     <meta property="og:title" content="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương" />
     <meta property="og:description" content="Hệ thống tự động giám sát và điều hành mực nước, lượng mưa, độ mặn thời gian thực." />
+    
+    <!-- Đường dẫn ảnh Logo lưu trữ trên GitHub và kích thước ảnh chuẩn để hiển thị đẹp -->
     <meta property="og:image" content="https://raw.githubusercontent.com/leanhduchwru-ux/thong-tin-dieu-hanh-cttl/main/logo.png" />
-    <meta property="og:url" content="https://congtytnhhmtvktcttlhaiduong.streamlit.app/" />
-    <meta property="og:type" content="website" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="300" />
+    
+    <!-- Thẻ meta dự phòng cho Twitter / X -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương" />
+    <meta name="twitter:description" content="Hệ thống tự động giám sát và điều hành mực nước, lượng mưa, độ mặn thời gian thực." />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/leanhduchwru-ux/thong-tin-dieu-hanh-cttl/main/logo.png" />
 </head>
 """, unsafe_allow_html=True)
 
