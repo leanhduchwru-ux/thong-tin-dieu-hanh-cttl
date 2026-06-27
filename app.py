@@ -373,7 +373,7 @@ with tab1:
             max_diff_val = max_diff_row['diff']
             
             water_analysis = f"Hệ thống mực nước tại các cống đầu mối đang được kiểm soát ổn định. Ghi nhận chênh lệch mực nước thượng lưu và hạ lưu lớn nhất tại cống <b>{max_diff_name}</b> với chênh lệch đạt {max_diff_val:.1f} cm (phía thượng lưu cao hơn hạ lưu), tạo điều kiện tối ưu để thực hiện quy trình xả tiêu tự chảy."
-            water_recommendation = f"Đề nghị các phòng chuyên môn nghiệp vụ phối hợp cùng Chi nhánh quản lý công trình thủy lợi huyện, thị xã (đặc biệt là đơn vị trực tiếp quản lý cống <b>{max_diff_name}</b>) chủ động theo dõi lịch triều, mở cống tiêu nước khi triều xuống thấp để tận dụng cột nước chênh lệch lớn, đẩy nhanh tiến độ tháo úng nội đồng và giảm thiểu tối đa chi phí chạy bơm điện."
+            water_recommendation = f"Chủ động theo dõi lịch triều, mở cống tiêu nước khi triều xuống thấp để tận dụng cột nước chênh lệch lớn, đẩy nhanh tiến độ tháo úng nội đồng và giảm thiểu tối đa chi phí chạy bơm điện."
         except Exception:
             water_analysis = "Hệ thống mực nước tại các công trình đầu mối đang ở ngưỡng vận hành an toàn và ổn định."
             water_recommendation = "Đề nghị các phòng chuyên môn và chi nhánh duy trì trực ban 24/24 giờ, thường xuyên theo dõi mực nước đệm trên hệ thống để sẵn sàng phương án mở cống gạn tháo tiêu úng khi có mưa lớn."
@@ -422,7 +422,7 @@ with tab2:
             
             if an_tho_val > 1.0:
                 sal_analysis = f"Độ mặn đo được tại cống An Thổ hiện ghi nhận ở mức <b>{an_tho_val:.2f} ‰</b>, đã vượt quá ngưỡng giới hạn cho phép lấy nước ngọt phục vụ nông nghiệp (1.0 ‰). Tình hình xâm nhập mặn đang diễn biến phức tạp do triều cường đẩy sâu."
-                sal_recommendation = "Yêu cầu <b>Phòng Quản lý nước và Công trình</b> phối hợp cùng <b>Chi nhánh Tứ Kỳ</b> thực hiện đóng kín cống An Thổ ngăn mặn triệt để. Tuyệt đối không lấy nước khi độ mặn vượt ngưỡng. Tranh thủ các thời điểm triều thấp, độ mặn giảm sâu dưới 1.0 ‰ để mở cống thau chua, lấy nước ngược."
+                sal_recommendation = "Tranh thủ các thời điểm triều thấp, độ mặn giảm sâu dưới 1.0 ‰ để mở cống thau chua, lấy nước ngược."
             else:
                 sal_analysis = f"Độ mặn tại khu vực cống An Thổ duy trì ở mức an toàn ổn định (ghi nhận đạt <b>{an_tho_val:.2f} ‰</b>, nằm dưới ngưỡng cảnh báo 1.0 ‰). Chất lượng nguồn nước ngọt hoàn toàn đảm bảo phục vụ sản xuất."
                 sal_recommendation = "Đề nghị các chi nhánh tranh thủ lấy nước ngọt trữ vào hệ thống kênh mương trục và kênh nội đồng để thau chua rửa mặn, tích lũy lượng nước đệm dự phòng cho các kỳ triều cường xâm nhập mặn sắp tới."
