@@ -387,7 +387,7 @@ st.markdown(
         background-color: {header_bg}; 
         color: {header_text};             
         border: 2px solid {header_border};
-        margin-bottom: 20px;
+        margin-bottom: 12px;
     ">
         <img src="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" style="height: 60px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));" />
         <div>
@@ -398,6 +398,14 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
+
+# Nút cập nhật thông tin trực tiếp trên trang chính
+if st.button("🔄 Cập nhật thông tin trực tuyến xem ngay", use_container_width=True):
+    with st.spinner("Đang kết nối và tải dữ liệu mới..."):
+        msg = scraper.run_all_scrapers()
+        st.success("Đã hoàn tất tải dữ liệu mới nhất!")
+        st.rerun()
+
 st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
 
 # Cài đặt thanh bên với các liên kết nguồn dữ liệu chính thức
