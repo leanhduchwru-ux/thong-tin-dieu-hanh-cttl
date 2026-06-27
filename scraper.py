@@ -137,9 +137,21 @@ def scrape_thuy_loi_hai_duong():
     url = "https://thuyloihaiduong.evina.vn/"
     headers = {"User-Agent": USER_AGENT}
     
-    response = requests.get(url, headers=headers, timeout=15, verify=False)
-    if response.status_code != 200:
-        raise Exception(f"Không thể truy cập. Mã lỗi: {response.status_code}")
+    # Tự động thử lại 3 lần nếu máy chủ phản hồi chậm hoặc timeout
+    response = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, headers=headers, timeout=30, verify=False)
+            if response.status_code == 200:
+                break
+        except (requests.exceptions.RequestException, Exception) as e:
+            if attempt == 2:
+                raise Exception(f"Lỗi kết nối sau 3 lần thử: {str(e)}")
+            time.sleep(2)
+            
+    if not response or response.status_code != 200:
+        status_code = response.status_code if response else "Không có phản hồi"
+        raise Exception(f"Không thể truy cập. Mã lỗi: {status_code}")
         
     soup = BeautifulSoup(response.text, 'html.parser')
     conn = sqlite3.connect(DB_PATH)
@@ -247,9 +259,21 @@ def scrape_bac_hung_hai():
     url = "https://bhh.com.vn/"
     headers = {"User-Agent": USER_AGENT}
     
-    response = requests.get(url, headers=headers, timeout=15, verify=False)
-    if response.status_code != 200:
-        raise Exception(f"Không thể truy cập bhh.com.vn. Mã lỗi: {response.status_code}")
+    # Tự động thử lại 3 lần nếu máy chủ phản hồi chậm hoặc timeout
+    response = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, headers=headers, timeout=30, verify=False)
+            if response.status_code == 200:
+                break
+        except (requests.exceptions.RequestException, Exception) as e:
+            if attempt == 2:
+                raise Exception(f"Lỗi kết nối bhh.com.vn sau 3 lần thử: {str(e)}")
+            time.sleep(2)
+            
+    if not response or response.status_code != 200:
+        status_code = response.status_code if response else "Không có phản hồi"
+        raise Exception(f"Không thể truy cập bhh.com.vn. Mã lỗi: {status_code}")
         
     soup = BeautifulSoup(response.text, 'html.parser')
     conn = sqlite3.connect(DB_PATH)
