@@ -208,7 +208,7 @@ st.markdown(f"""
         display: block !important;
     }}
 
-    /* Khắc phục chữ "keyboard_double_" hoặc "double_arrow_" xuất hiện ở nút đóng/mở thanh bên */
+    /* Định dạng nút mở rộng/thu gọn cài đặt hệ thống (Sidebar toggle) thành nút tròn có màu nổi bật */
     button[data-testid="collapsedControl"],
     [data-testid="stSidebarCollapseButton"] button,
     [data-testid="stSidebarHeader"] button,
@@ -218,12 +218,31 @@ st.markdown(f"""
     button[aria-label="Collapse sidebar"],
     button[aria-label="Close sidebar"] {{
         position: relative !important;
-        width: 40px !important;
-        height: 40px !important;
+        width: 36px !important;
+        height: 36px !important;
         font-size: 0px !important;
         color: transparent !important;
         text-indent: -9999px !important;
         overflow: hidden !important;
+        background-color: {metric_color} !important;
+        border: 2px solid {card_border} !important;
+        border-radius: 50% !important;
+        box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3) !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+    }}
+    /* Hiệu ứng di chuột nổi bật */
+    button[data-testid="collapsedControl"]:hover,
+    [data-testid="stSidebarCollapseButton"] button:hover,
+    [data-testid="stSidebarHeader"] button:hover,
+    [data-testid="stHeader"] > button:hover,
+    button[aria-label="Collapse"]:hover,
+    button[aria-label="Close"]:hover,
+    button[aria-label="Collapse sidebar"]:hover,
+    button[aria-label="Close sidebar"]:hover {{
+        background-color: #3b82f6 !important;
+        box-shadow: 0 6px 15px rgba(59, 130, 246, 0.5) !important;
+        transform: scale(1.05) !important;
     }}
     button[data-testid="collapsedControl"] *,
     [data-testid="stSidebarCollapseButton"] button *,
@@ -245,8 +264,8 @@ st.markdown(f"""
         left: 50% !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
-        font-size: 18px !important;
-        color: #3b82f6 !important;
+        font-size: 14px !important;
+        color: #ffffff !important;
         font-weight: bold !important;
         opacity: 1 !important;
         display: inline-block !important;
@@ -263,8 +282,8 @@ st.markdown(f"""
         left: 50% !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
-        font-size: 18px !important;
-        color: #3b82f6 !important;
+        font-size: 14px !important;
+        color: #ffffff !important;
         font-weight: bold !important;
         opacity: 1 !important;
         display: inline-block !important;
@@ -358,6 +377,9 @@ def load_data():
 st.markdown(
     f"""
     <div style="
+        display: flex;
+        align-items: center;
+        gap: 15px;
         padding: 20px; 
         border-radius: 10px; 
         background-color: {header_bg}; 
@@ -365,7 +387,11 @@ st.markdown(
         border: 2px solid {header_border};
         margin-bottom: 20px;
     ">
-        <h1 style="color: {header_text}; margin: 0; font-size: 28px;">🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
+        <img src="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" style="height: 60px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));" />
+        <div>
+            <h1 style="color: {header_text}; margin: 0; font-size: 24px; font-weight: bold; line-height: 1.2;">Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
+            <div style="font-size: 14px; opacity: 0.95; margin-top: 4px; font-weight: 500;">Hệ thống giám sát điều hành và quản lý vận hành công trình Thủy lợi trực tuyến</div>
+        </div>
     </div>
     """, 
     unsafe_allow_html=True
