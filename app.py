@@ -574,28 +574,6 @@ with col_left:
             df_ops_latest['value_str'] = df_ops_latest.apply(clean_negative_flow, axis=1)
             df_ops_pivot = df_ops_latest.pivot(index='structure_name', columns='parameter_name', values='value_str').reset_index()
             df_ops_pivot.columns = ['Tên công trình', 'Độ mở cống (cm)', 'Lưu lượng xả (m3/s)']
-            
-            # Bản đồ màu nước cảm quan thực tế dựa trên dữ liệu chất lượng nước khu vực
-            water_color_map = {
-                "Xuân Quan": "🔴 Đỏ phù sa (Tốt)",
-                "Báo Đáp": "🔴 Đỏ phù sa (Tốt)",
-                "Kênh Cầu": "🟢 Xanh lục (Bình thường)",
-                "Lực Điền": "⚫ Đen kịt (Ô nhiễm nặng)",
-                "Cống Tranh": "⚫ Đen nhạt (Ô nhiễm)",
-                "Bá Thủy": "⚫ Xám đen (Ô nhiễm)",
-                "Cống Neo": "🟢 Xanh lục (Bình thường)",
-                "Cầu Cất": "🔵 Bình thường (Trong)",
-                "Cầu Xe": "🔴 Bình thường (Phù sa)",
-                "An Thổ": "🔴 Bình thường (Phù sa)",
-                "Hồ Phú Lợi": "🔵 Bình thường (Trong)",
-                "Cống An Trung": "🔵 Bình thường (Trong)",
-                "Cống An Lưu": "🔴 Bình thường (Phù sa)",
-                "Cống Tuần Mây": "🔴 Bình thường (Phù sa)",
-                "Cống Tiên Kiều": "🔵 Bình thường (Trong)",
-                "Cống Hiệp Lễ": "🔵 Bình thường (Trong)",
-                "Cống Chành Chành": "🟢 Xanh lục (Bình thường)"
-            }
-            df_ops_pivot['Màu nước (Cảm quan)'] = df_ops_pivot['Tên công trình'].map(water_color_map).fillna("⚪ Đang xác minh...")
             df_ops_pivot = df_ops_pivot.fillna("-")
             
             st.dataframe(df_ops_pivot, use_container_width=True, hide_index=True)
@@ -605,20 +583,28 @@ with col_left:
         st.info("Không tìm thấy dữ liệu vận hành.")
 
 with col_right:
-    st.markdown("#### Dự báo thời tiết và chất lượng không khí")
-    if not df_weather.empty:
+    st.markdown("#### Chất lượng nước (Độ mặn đo được)")
+    if not df_salinity.empty:
+        # Lấy dữ liệu độ mặn mới nhất của các trạm
+        df_sal_latest = df_salinity.sort_values('timestamp').groupby('gate_name').last().reset_index()
+        
+        # Đánh giá chất lượng nước dựa trên quy chuẩn độ mặn nông nghiệp (< 1.0 ppt là nước ngọt)
+        def danh_gia_nuoc(val):
+            return "Nước ngọt (Đạt tiêu chuẩn tưới)" if val <= 1.0 else "Nước lợ (Vượt ngưỡng mặn)"
+            
+        df_sal_latest['Chất lượng nước'] = df_sal_latest['value'].apply(danh_gia_nuoc)
+        df_sal_show = df_sal_latest[['timestamp', 'gate_name', 'value', 'Chất lượng nước']]
+        
         st.dataframe(
-            df_weather[['timestamp', 'temperature', 'humidity', 'wind_speed', 'aqi_status', 'pm25']].head(10),
+            df_sal_show,
             column_config={
-                "timestamp": "Thời gian",
-                "temperature": st.column_config.NumberColumn("Nhiệt độ (°C)", format="%.1f"),
-                "humidity": st.column_config.NumberColumn("Độ ẩm (%)", format="%.0f"),
-                "wind_speed": st.column_config.NumberColumn("Tốc độ gió (m/s)", format="%.1f"),
-                "aqi_status": "Chất lượng không khí",
-                "pm25": st.column_config.NumberColumn("Bụi mịn (µg/m³)", format="%.1f")
+                "timestamp": "Thời gian cập nhật",
+                "gate_name": "Tên trạm đo độ mặn",
+                "value": st.column_config.NumberColumn("Độ mặn (‰)", format="%.2f"),
+                "Chất lượng nước": "Đánh giá chất lượng"
             },
             use_container_width=True,
             hide_index=True
         )
     else:
-        st.info("Chưa có thông tin thời tiết lịch sử.")
+        st.info("Chưa có thông tin chất lượng nước.")
