@@ -571,11 +571,31 @@ with col_left:
                     if val_str.startswith('-'):
                         return val_str[1:].strip()
                 return row['value_str']
-                
             df_ops_latest['value_str'] = df_ops_latest.apply(clean_negative_flow, axis=1)
-            
             df_ops_pivot = df_ops_latest.pivot(index='structure_name', columns='parameter_name', values='value_str').reset_index()
             df_ops_pivot.columns = ['Tên công trình', 'Độ mở cống (cm)', 'Lưu lượng xả (m3/s)']
+            
+            # Bản đồ màu nước cảm quan thực tế dựa trên dữ liệu chất lượng nước khu vực
+            water_color_map = {
+                "Xuân Quan": "🔴 Đỏ phù sa (Tốt)",
+                "Báo Đáp": "🔴 Đỏ phù sa (Tốt)",
+                "Kênh Cầu": "🟢 Xanh lục (Bình thường)",
+                "Lực Điền": "⚫ Đen kịt (Ô nhiễm nặng)",
+                "Cống Tranh": "⚫ Đen nhạt (Ô nhiễm)",
+                "Bá Thủy": "⚫ Xám đen (Ô nhiễm)",
+                "Cống Neo": "🟢 Xanh lục (Bình thường)",
+                "Cầu Cất": "🔵 Bình thường (Trong)",
+                "Cầu Xe": "🔴 Bình thường (Phù sa)",
+                "An Thổ": "🔴 Bình thường (Phù sa)",
+                "Hồ Phú Lợi": "🔵 Bình thường (Trong)",
+                "Cống An Trung": "🔵 Bình thường (Trong)",
+                "Cống An Lưu": "🔴 Bình thường (Phù sa)",
+                "Cống Tuần Mây": "🔴 Bình thường (Phù sa)",
+                "Cống Tiên Kiều": "🔵 Bình thường (Trong)",
+                "Cống Hiệp Lễ": "🔵 Bình thường (Trong)",
+                "Cống Chành Chành": "🟢 Xanh lục (Bình thường)"
+            }
+            df_ops_pivot['Màu nước (Cảm quan)'] = df_ops_pivot['Tên công trình'].map(water_color_map).fillna("⚪ Đang xác minh...")
             df_ops_pivot = df_ops_pivot.fillna("-")
             
             st.dataframe(df_ops_pivot, use_container_width=True, hide_index=True)
