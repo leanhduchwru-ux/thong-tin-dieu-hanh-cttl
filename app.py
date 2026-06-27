@@ -18,9 +18,25 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Khởi động luồng scheduler ngầm nếu chưa khởi động
+# Khởi động luồng scheduler ngầm và kiểm tra dữ liệu ban đầu
 if "scheduler_started" not in st.session_state:
     scraper.init_db()
+    
+    # Kiểm tra dữ liệu hiện tại để tránh hiển thị biểu đồ trống rỗng ở lần khởi chạy đầu tiên trên Cloud
+    conn = sqlite3.connect(scraper.DB_PATH)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT count(*) FROM weather")
+        has_data = cursor.fetchone()[0] > 0
+    except sqlite3.OperationalError:
+        has_data = False
+    conn.close()
+    
+    # Nếu chưa có dữ liệu, tiến hành cào đồng bộ ngay lập tức trước khi tải trang
+    if not has_data:
+        with st.spinner("Đang khởi tạo dữ liệu từ các trang công ty (khoảng 10-15 giây)..."):
+            scraper.run_all_scrapers()
+            
     scraper.start_scheduler()
     st.session_state["scheduler_started"] = True
 
@@ -178,8 +194,7 @@ with st.sidebar:
         st.info(last_update_info['message'])
     
     st.markdown("---")
-    # Thay thế nút Cập nhật thủ công thành "Xem dữ liệu thời gian thực"
-    if st.button("Xem dữ liệu thời gian thực", width="stretch"):
+    if st.button("Xem dữ liệu thời gian thực", use_container_width=True):
         with st.spinner("Đang kết nối và tải dữ liệu mới..."):
             msg = scraper.run_all_scrapers()
             st.success("Đã hoàn tất tải dữ liệu mới nhất!")
@@ -290,7 +305,7 @@ with tab1:
             xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
             yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.warning("Không có dữ liệu mực nước để hiển thị.")
 
@@ -319,7 +334,7 @@ with tab2:
             xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
             yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig_sal, width="stretch")
+        st.plotly_chart(fig_sal, use_container_width=True)
     else:
         st.warning("Không có dữ liệu lịch sử độ mặn.")
 
@@ -348,7 +363,7 @@ with tab3:
             xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
             yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig_rain, width="stretch")
+        st.plotly_chart(fig_rain, use_container_width=True)
     else:
         st.warning("Không có dữ liệu lượng mưa để hiển thị.")
 
@@ -368,7 +383,7 @@ with col_left:
             df_ops_pivot.columns = ['Tên công trình', 'Độ mở cống (cm)', 'Lưu lượng xả (m3/s)']
             df_ops_pivot = df_ops_pivot.fillna("-")
             
-            st.dataframe(df_ops_pivot, width="stretch", hide_index=True)
+            st.dataframe(df_ops_pivot, use_container_width=True, hide_index=True)
         else:
             st.info("Chưa ghi nhận hoạt động đóng mở cống trong ngày.")
     else:
@@ -387,7 +402,7 @@ with col_right:
                 "aqi_status": "Chất lượng không khí",
                 "pm25": st.column_config.NumberColumn("Bụi mịn (µg/m³)", format="%.1f")
             },
-            width="stretch",
+            use_container_width=True,
             hide_index=True
         )
     else:
