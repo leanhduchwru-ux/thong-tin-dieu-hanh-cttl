@@ -200,6 +200,14 @@ st.markdown(f"""
         font-weight: bold;
     }}
 
+    /* Sửa thành block để hiển thị lại thanh Sidebar và nút đóng/mở */
+    [data-testid="stSidebar"] {{
+        display: block !important;
+    }}
+    [data-testid="stSidebarCollapsedControl"] {{
+        display: block !important;
+    }}
+
     /* Khắc phục chữ "keyboard_double_" hoặc "double_arrow_" xuất hiện ở nút đóng/mở thanh bên */
     button[data-testid="collapsedControl"],
     [data-testid="stSidebarCollapseButton"] button,
