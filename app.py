@@ -145,25 +145,45 @@ st.markdown(f"""
     }}
 
     /* Khắc phục chữ "keyboard_double_" xuất hiện ở nút đóng/mở thanh bên */
-    button[data-testid="collapsedControl"] *,
-    [data-testid="stSidebarCollapseButton"] button * {{
-        display: none !important;
-        font-size: 0px !important;
-        color: transparent !important;
+    button[data-testid="collapsedControl"] {{
+        position: relative !important;
+        width: 40px !important;
+        height: 40px !important;
+    }}
+    button[data-testid="collapsedControl"] * {{
+        opacity: 0 !important;
     }}
     button[data-testid="collapsedControl"]::after {{
         content: "▶" !important;
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         font-size: 18px !important;
         color: #3b82f6 !important;
-        font-weight: bold;
-        display: inline-block;
+        font-weight: bold !important;
+        opacity: 1 !important;
+        display: inline-block !important;
+    }}
+    [data-testid="stSidebarCollapseButton"] button {{
+        position: relative !important;
+        width: 40px !important;
+        height: 40px !important;
+    }}
+    [data-testid="stSidebarCollapseButton"] button * {{
+        opacity: 0 !important;
     }}
     [data-testid="stSidebarCollapseButton"] button::after {{
         content: "◀" !important;
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         font-size: 18px !important;
         color: #3b82f6 !important;
-        font-weight: bold;
-        display: inline-block;
+        font-weight: bold !important;
+        opacity: 1 !important;
+        display: inline-block !important;
     }}
 
     /* Tự động tối ưu hóa hiển thị và co giãn trên màn hình điện thoại */
