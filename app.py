@@ -645,8 +645,24 @@ with col_right:
         df_sal_latest['Chất lượng nước'] = df_sal_latest['value'].apply(danh_gia_nuoc)
         df_sal_show = df_sal_latest[['timestamp', 'gate_name', 'value', 'Chất lượng nước']]
         
+        # Định nghĩa hàm tô màu ô bảng chất lượng nước dựa trên độ mặn
+        def to_mau_chat_luong(row):
+            styles = []
+            for col in row.index:
+                if col == 'Chất lượng nước':
+                    val = row[col]
+                    if "ngọt" in val.lower():
+                        styles.append('background-color: #d8f3dc; color: #1b4332; font-weight: bold;')
+                    else:
+                        styles.append('background-color: #ffccd5; color: #b7094c; font-weight: bold;')
+                else:
+                    styles.append('')
+            return styles
+
+        df_sal_show_styled = df_sal_show.style.apply(to_mau_chat_luong, axis=1)
+        
         st.dataframe(
-            df_sal_show,
+            df_sal_show_styled,
             column_config={
                 "timestamp": "Thời gian cập nhật",
                 "gate_name": "Tên trạm đo độ mặn",
