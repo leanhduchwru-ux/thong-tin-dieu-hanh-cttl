@@ -127,6 +127,28 @@ st.markdown(f"""
         color: #22c55e !important;
         font-weight: bold;
     }}
+
+    /* Khắc phục chữ "keyboard_double_" xuất hiện ở nút đóng/mở thanh bên */
+    button[data-testid="collapsedControl"] {{
+        font-size: 0px !important;
+    }}
+    button[data-testid="collapsedControl"]::after {{
+        content: "▶" !important;
+        font-size: 18px !important;
+        color: #3b82f6 !important;
+        font-weight: bold;
+        display: inline-block;
+    }}
+    section[data-testid="stSidebar"] button[aria-label="Close sidebar"] {{
+        font-size: 0px !important;
+    }}
+    section[data-testid="stSidebar"] button[aria-label="Close sidebar"]::after {{
+        content: "◀" !important;
+        font-size: 18px !important;
+        color: #3b82f6 !important;
+        font-weight: bold;
+        display: inline-block;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -284,7 +306,7 @@ with tab2:
             color="gate_name",
             labels={"timestamp": "Thời gian", "value": "Độ mặn (‰ hoặc ppt)", "gate_name": "Trạm đo"},
             markers=True,
-            color_discrete_sequence=["#ef4444", "#22c55e"],
+            color_discrete_map={"Cống An Thổ": "#06b6d4", "Cống Cầu Xe": "#d946ef"},
             height=450,
             template=plotly_template
         )
@@ -313,7 +335,7 @@ with tab3:
             y="rain_amount",
             labels={"station_name": "Trạm đo lượng mưa", "rain_amount": "Lượng mưa tích lũy (mm)"},
             color="rain_amount",
-            color_continuous_scale="Blues" if st.session_state["theme"] == "Ban ngày ☀️" else "Cividis",
+            color_continuous_scale="Teals" if st.session_state["theme"] == "Ban ngày ☀️" else "Viridis",
             height=450,
             template=plotly_template
         )
