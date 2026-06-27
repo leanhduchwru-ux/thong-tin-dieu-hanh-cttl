@@ -624,8 +624,11 @@ with tab4:
         return f'background-color: {color}; color: {text_color}; font-weight: bold;'
 
     if not df_water.empty:
-        # Tô màu cột Chất lượng nước dựa trên định tính cảm quan
-        styled_df = df_water.style.applymap(style_water_quality, subset=['Chất lượng nước'])
+        # Tô màu cột Chất lượng nước dựa trên định tính cảm quan (Tương thích mọi phiên bản Pandas)
+        if hasattr(df_water.style, 'map'):
+            styled_df = df_water.style.map(style_water_quality, subset=['Chất lượng nước'])
+        else:
+            styled_df = df_water.style.applymap(style_water_quality, subset=['Chất lượng nước'])
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
         
         # Chú giải trạng thái màu sắc và cảm quan mùi nước
