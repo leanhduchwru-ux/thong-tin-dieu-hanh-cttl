@@ -131,6 +131,26 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
+    /* Định dạng nút bấm (st.button) tương thích giao diện Sáng/Tối */
+    div.stButton > button {{
+        background-color: {card_bg} !important;
+        color: {text_color} !important;
+        border: 2px solid {card_border} !important;
+        border-radius: 6px !important;
+        padding: 8px 16px !important;
+        font-weight: bold !important;
+        transition: all 0.3s ease !important;
+    }}
+    div.stButton > button:hover {{
+        background-color: {metric_color} !important;
+        color: #ffffff !important;
+        border-color: {metric_color} !important;
+        box-shadow: 0 4px 10px rgba(56, 189, 248, 0.4) !important;
+    }}
+    div.stButton > button * {{
+        color: inherit !important;
+    }}
+
     /* Định dạng thanh bên (Sidebar) */
     section[data-testid="stSidebar"] {{
         background-color: {card_bg} !important;
