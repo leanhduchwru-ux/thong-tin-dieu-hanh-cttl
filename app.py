@@ -112,6 +112,14 @@ st.markdown(f"""
         font-family: 'Times New Roman', Times, serif !important;
     }}
     
+    /* Đảm bảo các biểu tượng Material Design không bị đè font Times New Roman */
+    .material-icons,
+    .material-symbols-outlined,
+    [class*="material-symbols"],
+    [class*="material-icons"] {{
+        font-family: 'Material Symbols Outlined', 'Material Icons', sans-serif !important;
+    }}
+    
     /* Đồng bộ nền trang sáng / tối */
     .stApp {{
         background-color: {bg_color} !important;
