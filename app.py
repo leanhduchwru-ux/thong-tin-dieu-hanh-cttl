@@ -13,7 +13,7 @@ import scraper
 
 st.set_page_config(
     page_title="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương",
-    page_icon="⏩",
+    page_icon="🏢",
     layout="wide",
     initial_sidebar_state="expanded"
 )
