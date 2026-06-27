@@ -553,6 +553,7 @@ with tab3:
 
 with tab4:
     st.markdown("### Chỉ số chất lượng nước (Độ mặn) tại các công trình")
+    st.info("⚠️ Lưu ý: Các trang web nguồn (thuyloihaiduong.evina.vn và bhh.com.vn) hiện chưa cung cấp trường dữ liệu số hóa về Màu nước của các tuyến kênh và công trình. Để đảm bảo tính chính xác và không tự ý bổ sung số liệu cảm quan, hệ thống chỉ hiển thị thông số Chất lượng nước dựa trên dữ liệu Độ mặn thực tế.")
     if not df_salinity.empty:
         df_sal_latest = df_salinity.sort_values('timestamp').groupby('gate_name').last().reset_index()
         fig_sal_bar = px.bar(
