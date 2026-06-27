@@ -406,6 +406,14 @@ if st.button("🔄 Cập nhật thông tin trực tuyến xem ngay", use_contain
         st.success("Đã hoàn tất tải dữ liệu mới nhất!")
         st.rerun()
 
+st.markdown("""
+**Nguồn dữ liệu:**
+1. [https://thuyloihaiduong.evina.vn/](https://thuyloihaiduong.evina.vn/)
+2. [https://www.vrain.vn/landing](https://www.vrain.vn/landing)
+3. [https://vnbaolut.net/thoi-tiet-hai-duong](https://vnbaolut.net/thoi-tiet-hai-duong)
+4. [https://bhh.com.vn/](https://bhh.com.vn/)
+""")
+
 st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
 
 # Cài đặt thanh bên với các liên kết nguồn dữ liệu chính thức
