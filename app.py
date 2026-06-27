@@ -86,6 +86,17 @@ else:
     grid_color = "#e2e8f0"
     axis_color = "#475569"
 
+# Nhúng các thẻ meta Open Graph để hiển thị bản xem trước đẹp khi chia sẻ qua Zalo/Facebook
+st.markdown("""
+<head>
+    <meta property="og:title" content="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương" />
+    <meta property="og:description" content="Hệ thống tự động giám sát và điều hành mực nước, lượng mưa, độ mặn thời gian thực." />
+    <meta property="og:image" content="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" />
+    <meta property="og:url" content="https://congtytnhhmtvktcttlhaiduong.streamlit.app/" />
+    <meta property="og:type" content="website" />
+</head>
+""", unsafe_allow_html=True)
+
 # Nhúng CSS tùy chỉnh để định hình Times New Roman và phối màu tương phản cao
 st.markdown(f"""
 <style>
