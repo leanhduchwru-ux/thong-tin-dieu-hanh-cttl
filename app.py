@@ -350,7 +350,7 @@ with tab3:
             y="rain_amount",
             labels={"station_name": "Trạm đo lượng mưa", "rain_amount": "Lượng mưa tích lũy (mm)"},
             color="rain_amount",
-            color_continuous_scale="Teals" if st.session_state["theme"] == "Ban ngày ☀️" else "Viridis",
+            color_continuous_scale="Teal" if st.session_state["theme"] == "Ban ngày ☀️" else "Viridis",
             height=450,
             template=plotly_template
         )
