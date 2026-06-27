@@ -791,13 +791,7 @@ with tab4:
             styled_df = df_water.style.applymap(style_water_quality, subset=['Chất lượng nước'])
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
         
-        # Chú giải trạng thái màu sắc và cảm quan mùi nước
-        st.markdown("""
-        **Chú giải trạng thái nguồn nước:**
-        - <span style="color:#b7094c; font-weight:bold;">■ Ô nhiễm nặng</span> (Màu nước đen kịt, bốc mùi hôi thối nồng nặc)
-        - <span style="color:#e65c00; font-weight:bold;">■ Ô nhiễm nhẹ / Biến đổi màu</span> (Màu nước đen nhạt, xám đen, xanh đen, ít mùi)
-        - <span style="color:#1b4332; font-weight:bold;">■ Bình thường</span> (Màu nước an toàn, đục phù sa tự nhiên hoặc nước trong không mùi)
-        """, unsafe_allow_html=True)
+
         
         # Phân tích tự động dựa trên số tuyến bị ô nhiễm màu/mùi nước
         num_black = len(df_water[df_water['Chất lượng nước'].str.contains("đen", case=False, na=False)])
