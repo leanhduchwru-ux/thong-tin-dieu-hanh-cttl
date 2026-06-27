@@ -228,6 +228,36 @@ st.markdown(f"""
 def get_db_connection():
     return sqlite3.connect(scraper.DB_PATH)
 
+def clean_names(df, col_name):
+    if df.empty or col_name not in df.columns:
+        return df
+    
+    mapping = {
+        # Bắc Hưng Hải
+        "X. QUAN": "Xuân Quan",
+        "BÁO ĐÁP": "Báo Đáp",
+        "KÊNH CẦU": "Kênh Cầu",
+        "LỰC ĐIỀN": "Lực Điền",
+        "C.TRANH": "Cống Tranh",
+        "BÁ THUỶ": "Bá Thủy",
+        "BÁ THUY": "Bá Thủy",
+        "C. NEO": "Cống Neo",
+        "CẦU CẤT": "Cầu Cất",
+        "CẦU XE": "Cầu Xe",
+        "AN THỔ": "An Thổ",
+        
+        # Hải Dương
+        "HỒ PHÚ LỢI": "Hồ Phú Lợi",
+        "CỐNG AN TRUNG": "Cống An Trung",
+        "CỐNG AN LƯU": "Cống An Lưu",
+        "CỐNG TUẦN MÂY": "Cống Tuần Mây",
+        "CỐNG TIÊN KIỀU": "Cống Tiên Kiều",
+        "CỐNG HIỆP LỄ": "Cống Hiệp Lễ",
+        "CỐNG CHÀNH CHÀNH": "Cống Chành Chành"
+    }
+    df[col_name] = df[col_name].replace(mapping)
+    return df
+
 def load_data():
     conn = get_db_connection()
     df_rain = pd.read_sql_query("SELECT * FROM rainfall ORDER BY timestamp DESC", conn)
@@ -235,6 +265,12 @@ def load_data():
     df_salinity = pd.read_sql_query("SELECT * FROM salinity ORDER BY timestamp DESC", conn)
     df_weather = pd.read_sql_query("SELECT * FROM weather ORDER BY timestamp DESC", conn)
     conn.close()
+    
+    # Loại bỏ các chữ viết tắt và viết hoa tùy tiện trong tên các trạm
+    df_rain = clean_names(df_rain, 'station_name')
+    df_struct = clean_names(df_struct, 'structure_name')
+    df_salinity = clean_names(df_salinity, 'gate_name')
+    
     return df_rain, df_struct, df_salinity, df_weather
 
 # --- TRANG CHỦ & TIÊU ĐỀ ---
