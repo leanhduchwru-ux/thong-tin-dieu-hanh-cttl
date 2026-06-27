@@ -165,6 +165,29 @@ st.markdown(f"""
         font-weight: bold;
         display: inline-block;
     }}
+
+    /* Tự động tối ưu hóa hiển thị và co giãn trên màn hình điện thoại */
+    @media (max-width: 768px) {{
+        .metric-value {{
+            font-size: 20px !important;
+        }}
+        .metric-label {{
+            font-size: 13px !important;
+        }}
+        .metric-card {{
+            padding: 10px !important;
+            margin-bottom: 10px !important;
+        }}
+        h1 {{
+            font-size: 24px !important;
+        }}
+        h2 {{
+            font-size: 20px !important;
+        }}
+        h3 {{
+            font-size: 18px !important;
+        }}
+    }}
 </style>
 """, unsafe_allow_html=True)
 
