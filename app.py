@@ -149,9 +149,13 @@ st.markdown(f"""
         position: relative !important;
         width: 40px !important;
         height: 40px !important;
+        font-size: 0px !important;
+        color: transparent !important;
     }}
     button[data-testid="collapsedControl"] * {{
         opacity: 0 !important;
+        font-size: 0px !important;
+        color: transparent !important;
     }}
     button[data-testid="collapsedControl"]::after {{
         content: "▶" !important;
@@ -169,9 +173,13 @@ st.markdown(f"""
         position: relative !important;
         width: 40px !important;
         height: 40px !important;
+        font-size: 0px !important;
+        color: transparent !important;
     }}
     [data-testid="stSidebarCollapseButton"] button * {{
         opacity: 0 !important;
+        font-size: 0px !important;
+        color: transparent !important;
     }}
     [data-testid="stSidebarCollapseButton"] button::after {{
         content: "◀" !important;
