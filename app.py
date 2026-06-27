@@ -298,17 +298,12 @@ st.markdown(f"""
     header {{
         background-color: transparent !important;
     }}
-    header button:not([data-testid="collapsedControl"]) {{
-        display: none !important;
-    }}
-    header [data-testid="stHeaderActionElements"] {{
+    [data-testid="stHeaderActionElements"] {{
         display: none !important;
     }}
     #MainMenu {{
-        visibility: hidden !important;
         display: none !important;
-    }}
-</style>
+    }}</style>
 """, unsafe_allow_html=True)
 
 def get_db_connection():
