@@ -378,9 +378,21 @@ def scrape_weather_haiduong():
     url = "https://vnbaolut.net/thoi-tiet-hai-duong"
     headers = {"User-Agent": USER_AGENT}
     
-    response = requests.get(url, headers=headers, timeout=15, verify=False)
-    if response.status_code != 200:
-        raise Exception(f"Không thể truy cập vnbaolut.net. Mã lỗi: {response.status_code}")
+    # Tự động thử lại 3 lần nếu máy chủ phản hồi chậm hoặc timeout
+    response = None
+    for attempt in range(3):
+        try:
+            response = requests.get(url, headers=headers, timeout=30, verify=False)
+            if response.status_code == 200:
+                break
+        except (requests.exceptions.RequestException, Exception) as e:
+            if attempt == 2:
+                raise Exception(f"Lỗi kết nối vnbaolut.net sau 3 lần thử: {str(e)}")
+            time.sleep(2)
+            
+    if not response or response.status_code != 200:
+        status_code = response.status_code if response else "Không có phản hồi"
+        raise Exception(f"Không thể truy cập vnbaolut.net. Mã lỗi: {status_code}")
         
     soup = BeautifulSoup(response.text, 'html.parser')
     conn = sqlite3.connect(DB_PATH)

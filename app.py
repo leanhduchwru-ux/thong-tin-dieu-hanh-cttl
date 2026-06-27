@@ -9,7 +9,9 @@ import threading
 import time
 
 # Import các hàm cào dữ liệu từ scraper
+import importlib
 import scraper
+importlib.reload(scraper)
 
 st.set_page_config(
     page_title="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương",
