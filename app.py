@@ -91,7 +91,7 @@ st.markdown("""
 <head>
     <meta property="og:title" content="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương" />
     <meta property="og:description" content="Hệ thống tự động giám sát và điều hành mực nước, lượng mưa, độ mặn thời gian thực." />
-    <meta property="og:image" content="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/leanhduchwru-ux/thong-tin-dieu-hanh-cttl/main/logo.png" />
     <meta property="og:url" content="https://congtytnhhmtvktcttlhaiduong.streamlit.app/" />
     <meta property="og:type" content="website" />
 </head>
