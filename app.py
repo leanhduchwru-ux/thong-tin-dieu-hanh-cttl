@@ -176,6 +176,8 @@ st.markdown(f"""
         height: 40px !important;
         font-size: 0px !important;
         color: transparent !important;
+        text-indent: -9999px !important;
+        overflow: hidden !important;
     }}
     button[data-testid="collapsedControl"] *,
     [data-testid="stSidebarCollapseButton"] button *,
@@ -202,6 +204,7 @@ st.markdown(f"""
         font-weight: bold !important;
         opacity: 1 !important;
         display: inline-block !important;
+        text-indent: 0px !important;
     }}
     [data-testid="stSidebarCollapseButton"] button::after,
     [data-testid="stSidebarHeader"] button::after,
@@ -219,6 +222,7 @@ st.markdown(f"""
         font-weight: bold !important;
         opacity: 1 !important;
         display: inline-block !important;
+        text-indent: 0px !important;
     }}
 
     /* Tự động tối ưu hóa hiển thị và co giãn trên màn hình điện thoại */
