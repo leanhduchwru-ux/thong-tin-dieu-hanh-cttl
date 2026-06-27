@@ -144,15 +144,28 @@ st.markdown(f"""
         font-weight: bold;
     }}
 
-    /* Khắc phục chữ "keyboard_double_" xuất hiện ở nút đóng/mở thanh bên */
-    button[data-testid="collapsedControl"] {{
+    /* Khắc phục chữ "keyboard_double_" hoặc "double_arrow_" xuất hiện ở nút đóng/mở thanh bên */
+    button[data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebarHeader"] button,
+    button[aria-label="Collapse"],
+    button[aria-label="Close"],
+    button[aria-label="Collapse sidebar"],
+    button[aria-label="Close sidebar"] {{
         position: relative !important;
         width: 40px !important;
         height: 40px !important;
         font-size: 0px !important;
         color: transparent !important;
     }}
-    button[data-testid="collapsedControl"] * {{
+    button[data-testid="collapsedControl"] *,
+    [data-testid="stSidebarCollapseButton"] button *,
+    [data-testid="stSidebarHeader"] button *,
+    button[aria-label="Collapse"] *,
+    button[aria-label="Close"] *,
+    button[aria-label="Collapse sidebar"] *,
+    button[aria-label="Close sidebar"] * {{
+        display: none !important;
         opacity: 0 !important;
         font-size: 0px !important;
         color: transparent !important;
@@ -169,19 +182,12 @@ st.markdown(f"""
         opacity: 1 !important;
         display: inline-block !important;
     }}
-    [data-testid="stSidebarCollapseButton"] button {{
-        position: relative !important;
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 0px !important;
-        color: transparent !important;
-    }}
-    [data-testid="stSidebarCollapseButton"] button * {{
-        opacity: 0 !important;
-        font-size: 0px !important;
-        color: transparent !important;
-    }}
-    [data-testid="stSidebarCollapseButton"] button::after {{
+    [data-testid="stSidebarCollapseButton"] button::after,
+    [data-testid="stSidebarHeader"] button::after,
+    button[aria-label="Collapse"]::after,
+    button[aria-label="Close"]::after,
+    button[aria-label="Collapse sidebar"]::after,
+    button[aria-label="Close sidebar"]::after {{
         content: "◀" !important;
         position: absolute !important;
         left: 50% !important;
