@@ -370,9 +370,10 @@ st.markdown(f"""
         color: {header_text} !important;
     }}
     
-    /* Chỉ ẩn các nút bên phải header (Share, Star, Edit, Github, 3 dots), giữ lại nút mở Sidebar */
+    /* Ẩn hoàn toàn Streamlit Header mặc định */
     header {{
-        background-color: transparent !important;
+        visibility: hidden !important;
+        height: 0px !important;
     }}
     [data-testid="stHeaderActionElements"] {{
         display: none !important;
@@ -443,6 +444,17 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
+
+# Nút chuyển đổi Hiển thị Ban ngày / Ban đêm trực tiếp trên trang chính
+col_theme_left, col_theme_right = st.columns([1, 1])
+with col_theme_left:
+    if st.button("☀️ Ban ngày", use_container_width=True, type="primary" if st.session_state["theme"] == "Ban ngày ☀️" else "secondary"):
+        st.session_state["theme"] = "Ban ngày ☀️"
+        st.rerun()
+with col_theme_right:
+    if st.button("🌙 Ban đêm", use_container_width=True, type="primary" if st.session_state["theme"] == "Ban đêm 🌙" else "secondary"):
+        st.session_state["theme"] = "Ban đêm 🌙"
+        st.rerun()
 
 # Nút cập nhật thông tin trực tiếp trên trang chính
 if st.button("🔄 Cập nhật thông tin trực tuyến xem ngay", use_container_width=True):
