@@ -73,6 +73,11 @@ if st.session_state["theme"] == "Ban đêm 🌙":
     plotly_text = "#f8fafc"
     grid_color = "#334155"
     axis_color = "#94a3b8"
+    
+    # Màu sắc tiêu đề xanh dương đậm ban đêm
+    header_bg = "#1e3a8a"         
+    header_border = "#3b82f6"
+    header_text = "#f8fafc"
 else:
     bg_color = "#ffffff"          # Nền sáng
     text_color = "#0f172a"        # slate-900 (Chữ đen sẫm tương phản tốt)
@@ -85,6 +90,11 @@ else:
     plotly_text = "#0f172a"
     grid_color = "#e2e8f0"
     axis_color = "#475569"
+    
+    # Màu sắc tiêu đề xanh dương nhạt ban ngày
+    header_bg = "#eff6ff"         
+    header_border = "#1e40af"
+    header_text = "#1e40af"
 
 # Nhúng các thẻ meta Open Graph để hiển thị bản xem trước đẹp khi chia sẻ qua Zalo/Facebook/Twitter
 st.markdown("""
@@ -328,16 +338,16 @@ def load_data():
 
 # --- TRANG CHỦ & TIÊU ĐỀ ---
 st.markdown(
-    """
+    f"""
     <div style="
         padding: 20px; 
         border-radius: 10px; 
-        background-color: var(--background-color); /* Tự động đổi nền theo theme */
-        color: var(--text-color);             /* Tự động đổi màu chữ theo theme */
-        border: 1px solid var(--secondary-background-color);
+        background-color: {header_bg}; 
+        color: {header_text};             
+        border: 2px solid {header_border};
         margin-bottom: 20px;
     ">
-        <h1 style="color: var(--text-color); margin: 0; font-size: 28px;">🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
+        <h1 style="color: {header_text}; margin: 0; font-size: 28px;">🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
     </div>
     """, 
     unsafe_allow_html=True
