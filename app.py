@@ -386,7 +386,7 @@ else:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ----------------- PHẦN 2: BIỂU ĐỒ TRỰC QUAN HÓA -----------------
-tab1, tab2, tab3, tab4 = st.tabs(["📉 Mực nước tại các cống", "📈 Biến động độ mặn", "🌧️ Lượng mưa tại các trạm", "💧 Chất lượng nước"])
+tab1, tab2, tab3, tab4 = st.tabs(["📉 Mực nước tại các cống", "📈 Biến động độ mặn", "🌧️ Lượng mưa tại các trạm", "💧 Màu nước tại các công trình"])
 
 with tab1:
     st.markdown("### So sánh mực nước thượng lưu và hạ lưu tại các cống vận hành")
@@ -552,7 +552,7 @@ with tab3:
         st.warning("Không có dữ liệu lượng mưa để hiển thị.")
 
 with tab4:
-    st.markdown("### Chỉ số chất lượng nước (Độ mặn) tại các công trình cửa sông")
+    st.markdown("### Chỉ số chất lượng nước (Độ mặn) tại các công trình")
     if not df_salinity.empty:
         df_sal_latest = df_salinity.sort_values('timestamp').groupby('gate_name').last().reset_index()
         fig_sal_bar = px.bar(
