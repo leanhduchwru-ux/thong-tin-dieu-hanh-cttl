@@ -327,7 +327,21 @@ def load_data():
     return df_rain, df_struct, df_salinity, df_weather
 
 # --- TRANG CHỦ & TIÊU ĐỀ ---
-st.title("🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương")
+st.markdown(
+    """
+    <div style="
+        padding: 20px; 
+        border-radius: 10px; 
+        background-color: var(--background-color); /* Tự động đổi nền theo theme */
+        color: var(--text-color);             /* Tự động đổi màu chữ theo theme */
+        border: 1px solid var(--secondary-background-color);
+        margin-bottom: 20px;
+    ">
+        <h1 style="color: var(--text-color); margin: 0; font-size: 28px;">🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
 st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
 
 # Cài đặt thanh bên với các liên kết nguồn dữ liệu chính thức
