@@ -17,7 +17,7 @@ st.set_page_config(
     page_title="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương",
     page_icon="🏢",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Khởi động luồng scheduler ngầm và kiểm tra dữ liệu ban đầu
@@ -313,6 +313,58 @@ st.markdown(f"""
         h3 {{
             font-size: 18px !important;
         }}
+        .custom-header-banner {{
+            flex-direction: column !important;
+            text-align: center !important;
+            padding: 15px !important;
+            gap: 10px !important;
+        }}
+        .header-logo {{
+            height: 50px !important;
+        }}
+        .header-title {{
+            font-size: 18px !important;
+        }}
+        .header-subtitle {{
+            font-size: 12px !important;
+        }}
+    }}
+    
+    /* Thiết kế Responsive cho Banner Tiêu đề */
+    .custom-header-banner {{
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px; 
+        border-radius: 10px; 
+        background-color: {header_bg}; 
+        color: {header_text};             
+        border: 2px solid {header_border};
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }}
+    .header-logo {{
+        height: 65px !important;
+        width: auto !important;
+        filter: drop-shadow(0px 3px 6px rgba(0,0,0,0.15)) !important;
+    }}
+    .header-text-container {{
+        display: flex;
+        flex-direction: column;
+    }}
+    .header-title {{
+        color: {header_text} !important;
+        margin: 0 !important;
+        font-size: 26px !important;
+        font-weight: bold !important;
+        line-height: 1.2 !important;
+    }}
+    .header-subtitle {{
+        font-size: 14px !important;
+        opacity: 0.95 !important;
+        margin-top: 6px !important;
+        font-weight: 500 !important;
+        color: {header_text} !important;
     }}
     
     /* Chỉ ẩn các nút bên phải header (Share, Star, Edit, Github, 3 dots), giữ lại nút mở Sidebar */
@@ -378,21 +430,11 @@ def load_data():
 # --- TRANG CHỦ & TIÊU ĐỀ ---
 st.markdown(
     f"""
-    <div style="
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 20px; 
-        border-radius: 10px; 
-        background-color: {header_bg}; 
-        color: {header_text};             
-        border: 2px solid {header_border};
-        margin-bottom: 12px;
-    ">
-        <img src="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" style="height: 60px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));" />
-        <div>
-            <h1 style="color: {header_text}; margin: 0; font-size: 24px; font-weight: bold; line-height: 1.2;">Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
-            <div style="font-size: 14px; opacity: 0.95; margin-top: 4px; font-weight: 500;">Hệ thống giám sát điều hành và quản lý vận hành công trình Thủy lợi trực tuyến</div>
+    <div class="custom-header-banner">
+        <img class="header-logo" src="https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png" />
+        <div class="header-text-container">
+            <h1 class="header-title">Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương</h1>
+            <div class="header-subtitle">Hệ thống giám sát điều hành và quản lý vận hành công trình Thủy lợi trực tuyến</div>
         </div>
     </div>
     """, 
