@@ -286,13 +286,19 @@ st.markdown(f"""
         }}
     }}
     
-    /* Ẩn thanh Header mặc định của Streamlit (Share, Star, Edit, Github, 3 dots) */
+    /* Chỉ ẩn các nút bên phải header (Share, Star, Edit, Github, 3 dots), giữ lại nút mở Sidebar */
     header {{
-        visibility: hidden !important;
-        height: 0px !important;
+        background-color: transparent !important;
+    }}
+    header button:not([data-testid="collapsedControl"]) {{
+        display: none !important;
+    }}
+    header [data-testid="stHeaderActionElements"] {{
+        display: none !important;
     }}
     #MainMenu {{
         visibility: hidden !important;
+        display: none !important;
     }}
 </style>
 """, unsafe_allow_html=True)
