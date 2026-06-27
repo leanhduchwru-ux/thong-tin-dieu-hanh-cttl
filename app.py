@@ -285,6 +285,15 @@ st.markdown(f"""
             font-size: 18px !important;
         }}
     }}
+    
+    /* Ẩn thanh Header mặc định của Streamlit (Share, Star, Edit, Github, 3 dots) */
+    header {{
+        visibility: hidden !important;
+        height: 0px !important;
+    }}
+    #MainMenu {{
+        visibility: hidden !important;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
