@@ -166,6 +166,7 @@ st.markdown(f"""
     button[data-testid="collapsedControl"],
     [data-testid="stSidebarCollapseButton"] button,
     [data-testid="stSidebarHeader"] button,
+    [data-testid="stHeader"] > button,
     button[aria-label="Collapse"],
     button[aria-label="Close"],
     button[aria-label="Collapse sidebar"],
@@ -179,6 +180,7 @@ st.markdown(f"""
     button[data-testid="collapsedControl"] *,
     [data-testid="stSidebarCollapseButton"] button *,
     [data-testid="stSidebarHeader"] button *,
+    [data-testid="stHeader"] > button *,
     button[aria-label="Collapse"] *,
     button[aria-label="Close"] *,
     button[aria-label="Collapse sidebar"] *,
@@ -188,7 +190,8 @@ st.markdown(f"""
         font-size: 0px !important;
         color: transparent !important;
     }}
-    button[data-testid="collapsedControl"]::after {{
+    button[data-testid="collapsedControl"]::after,
+    [data-testid="stHeader"] > button::after {{
         content: "▶" !important;
         position: absolute !important;
         left: 50% !important;
