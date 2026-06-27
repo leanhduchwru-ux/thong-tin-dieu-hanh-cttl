@@ -30,7 +30,7 @@ if "theme" not in st.session_state:
 
 # Thanh bên (Sidebar) cài đặt
 with st.sidebar:
-    st.image("https://img.icons8.com/color/96/water.png", width=90)
+    st.image("https://thuyloihaiduong.evina.vn/upload/images/logos/thuyloihaiduong_logo.png", width=150)
     st.header("Cài đặt hệ thống")
     st.markdown("---")
     
@@ -169,10 +169,10 @@ with st.sidebar:
             
     st.markdown("---")
     st.markdown("**Nguồn dữ liệu:**")
-    st.caption("1. Hệ thống Thủy lợi Hải Dương")
-    st.caption("2. Hệ thống đo mưa Vrain")
-    st.caption("3. Công ty KTCTTL Bắc Hưng Hải")
-    st.caption("4. Cổng thông tin vnbaolut.net")
+    st.markdown("1. [https://thuyloihaiduong.evina.vn/](https://thuyloihaiduong.evina.vn/)")
+    st.markdown("2. [https://www.vrain.vn/landing](https://www.vrain.vn/landing)")
+    st.markdown("3. [https://vnbaolut.net/thoi-tiet-hai-duong](https://vnbaolut.net/thoi-tiet-hai-duong)")
+    st.markdown("4. [https://bhh.com.vn/](https://bhh.com.vn/)")
 
 # Tải dữ liệu từ database
 df_rain, df_struct, df_salinity, df_weather = load_data()
