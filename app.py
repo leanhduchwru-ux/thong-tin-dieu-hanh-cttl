@@ -44,84 +44,80 @@ with st.sidebar:
     
     st.markdown("---")
 
-# Định nghĩa bảng màu chuyên nghiệp tùy thuộc vào Chế độ hiển thị
+# Định nghĩa bảng màu chuyên nghiệp độ tương phản cao tùy thuộc vào Chế độ hiển thị
 if st.session_state["theme"] == "Ban đêm 🌙":
-    bg_color = "#0f172a"          # slate-900
-    text_color = "#f1f5f9"        # slate-100
-    card_bg = "#1e293b"           # slate-800
-    card_border = "#334155"       # slate-700
-    metric_color = "#38bdf8"      # sky-400
-    sec_text_color = "#94a3b8"    # slate-400
+    bg_color = "#0f172a"          # slate-900 (Nền tối sâu)
+    text_color = "#f8fafc"        # slate-50 (Chữ trắng sáng rõ)
+    card_bg = "#1e293b"           # slate-800 (Nền thẻ tối)
+    card_border = "#3b82f6"       # Màu viền xanh dương nổi bật để nhìn rõ sắc nét ban đêm
+    metric_color = "#38bdf8"      # Màu chỉ số chính xanh dương sáng
+    sec_text_color = "#cbd5e1"    # slate-300
     plotly_template = "plotly_dark"
     plotly_bg = "#1e293b"
-    plotly_text = "#f1f5f9"
+    plotly_text = "#f8fafc"
     grid_color = "#334155"
-    axis_color = "#475569"
-else:
-    bg_color = "#ffffff"
-    text_color = "#1e293b"        # slate-800
-    card_bg = "#f8fafc"           # slate-50
-    card_border = "#e2e8f0"       # slate-200
-    metric_color = "#1a73e8"      # blue-600
-    sec_text_color = "#64748b"    # slate-500
-    plotly_template = "plotly_white"
-    plotly_bg = "#f8fafc"
-    plotly_text = "#1e293b"
-    grid_color = "#e2e8f0"
     axis_color = "#94a3b8"
+else:
+    bg_color = "#ffffff"          # Nền sáng
+    text_color = "#0f172a"        # slate-900 (Chữ đen sẫm tương phản tốt)
+    card_bg = "#f1f5f9"           # slate-100 (Nền thẻ xám nhạt)
+    card_border = "#1e40af"       # Viền xanh đậm sắc nét ban ngày
+    metric_color = "#1d4ed8"      # Màu chỉ số chính xanh đậm
+    sec_text_color = "#475569"    # slate-600
+    plotly_template = "plotly_white"
+    plotly_bg = "#ffffff"
+    plotly_text = "#0f172a"
+    grid_color = "#e2e8f0"
+    axis_color = "#475569"
 
-# Nhúng CSS tùy chỉnh để định hình Times New Roman và phối màu đồng bộ
+# Nhúng CSS tùy chỉnh để định hình Times New Roman và phối màu tương phản cao
 st.markdown(f"""
 <style>
-    /* Ép tất cả các thẻ và class sang Times New Roman */
+    /* Chuyển toàn bộ font chữ sang Times New Roman */
     html, body, [class*="css"], .stApp, p, span, label, h1, h2, h3, h4, h5, h6, input, button, select, textarea, div {{
         font-family: 'Times New Roman', Times, serif !important;
     }}
     
-    /* Đồng bộ giao diện tổng quan nền sáng / tối */
+    /* Đồng bộ nền trang sáng / tối */
     .stApp {{
         background-color: {bg_color} !important;
         color: {text_color} !important;
     }}
     
-    /* Giao diện màu chữ chính */
+    /* Màu chữ chính cho tiêu đề và nội dung */
     h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, span {{
         color: {text_color} !important;
     }}
 
-    /* CSS tùy biến cho Sidebar */
+    /* Định dạng thanh bên (Sidebar) */
     section[data-testid="stSidebar"] {{
         background-color: {card_bg} !important;
-        border-right: 1px solid {card_border} !important;
+        border-right: 2px solid {card_border} !important;
     }}
     section[data-testid="stSidebar"] * {{
         color: {text_color} !important;
     }}
     
-    /* Hộp thông số KPI card */
+    /* Hộp thẻ hiển thị thông số (Metric Card) độ tương phản cao, sắc nét */
     .metric-card {{
         background-color: {card_bg} !important;
-        border: 1px solid {card_border} !important;
+        border: 2px solid {card_border} !important;
         border-radius: 8px;
         padding: 15px;
         text-align: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        transition: transform 0.2s ease-in-out;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
         color: {text_color} !important;
-    }}
-    .metric-card:hover {{
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.06);
     }}
     .metric-value {{
         font-size: 26px;
         font-weight: 700;
         color: {metric_color} !important;
+        margin-bottom: 5px;
     }}
     .metric-label {{
         font-size: 15px;
         color: {sec_text_color} !important;
-        margin-top: 5px;
+        font-weight: 500;
     }}
     .warning-text {{
         color: #ef4444 !important;
@@ -146,13 +142,12 @@ def load_data():
     conn.close()
     return df_rain, df_struct, df_salinity, df_weather
 
-# --- TRANG CHỦ & TIÊU ĐỀ ĐÃ ĐƯỢC THAY THẾ ---
+# --- TRANG CHỦ & TIÊU ĐỀ ---
 st.title("🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương")
 st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
 
-# Tiếp tục nạp thông tin logs bên thanh bên
+# Cài đặt thanh bên với các liên kết nguồn dữ liệu chính thức
 with st.sidebar:
-    # Hiển thị log cập nhật cuối cùng
     last_update_info = scraper.get_last_update()
     if last_update_info:
         st.subheader("Trạng thái cập nhật")
@@ -161,10 +156,11 @@ with st.sidebar:
         st.info(last_update_info['message'])
     
     st.markdown("---")
-    if st.button("Cập nhật dữ liệu ngay (Thủ công)", width="stretch"):
-        with st.spinner("Đang kết nối và cào dữ liệu mới..."):
+    # Thay thế nút Cập nhật thủ công thành "Xem dữ liệu thời gian thực"
+    if st.button("Xem dữ liệu thời gian thực", width="stretch"):
+        with st.spinner("Đang kết nối và tải dữ liệu mới..."):
             msg = scraper.run_all_scrapers()
-            st.success("Đã hoàn tất cập nhật!")
+            st.success("Đã hoàn tất tải dữ liệu mới nhất!")
             st.rerun()
             
     st.markdown("---")
@@ -191,7 +187,7 @@ if not df_weather.empty:
     </div>
     """, unsafe_allow_html=True)
 else:
-    col1.markdown('<div class="metric-card">Chưa có dữ liệu thời tiết</div>', unsafe_allow_html=True)
+    col1.markdown('<div class="metric-card"><div class="metric-label">Chưa có dữ liệu thời tiết</div></div>', unsafe_allow_html=True)
 
 # 2. Chất lượng không khí (AQI)
 if not df_weather.empty:
@@ -200,11 +196,11 @@ if not df_weather.empty:
     col2.markdown(f"""
     <div class="metric-card">
         <div class="metric-value {aqi_class}">{latest_w['aqi_status']}</div>
-        <div class="metric-label">Chất lượng không khí (PM2.5: {latest_w['pm25']:.1f})</div>
+        <div class="metric-label">Chất lượng không khí (Bụi mịn: {latest_w['pm25']:.1f} µg/m³)</div>
     </div>
     """, unsafe_allow_html=True)
 else:
-    col2.markdown('<div class="metric-card">Chưa có dữ liệu không khí</div>', unsafe_allow_html=True)
+    col2.markdown('<div class="metric-card"><div class="metric-label">Chưa có dữ liệu không khí</div></div>', unsafe_allow_html=True)
 
 # 3. Độ mặn tại cống An Thổ
 df_an_tho = df_salinity[df_salinity['gate_name'].str.contains("An Thổ|AN THỔ", case=False, na=False)]
@@ -215,11 +211,11 @@ if not df_an_tho.empty:
     col3.markdown(f"""
     <div class="metric-card">
         <div class="metric-value {class_name}">{val:.2f} ‰</div>
-        <div class="metric-label">Độ mặn cống An Thổ ({latest_an_tho['timestamp'].split()[1]})</div>
+        <div class="metric-label">Độ mặn cống An Thổ (Đo lúc: {latest_an_tho['timestamp'].split()[1]})</div>
     </div>
     """, unsafe_allow_html=True)
 else:
-    col3.markdown('<div class="metric-card">Chưa có dữ liệu độ mặn An Thổ</div>', unsafe_allow_html=True)
+    col3.markdown('<div class="metric-card"><div class="metric-label">Chưa có dữ liệu độ mặn An Thổ</div></div>', unsafe_allow_html=True)
 
 # 4. Độ mặn tại cống Cầu Xe
 df_cau_xe = df_salinity[df_salinity['gate_name'].str.contains("Cầu Xe|CẦU XE", case=False, na=False)]
@@ -230,26 +226,26 @@ if not df_cau_xe.empty:
     col4.markdown(f"""
     <div class="metric-card">
         <div class="metric-value {class_name}">{val:.2f} ‰</div>
-        <div class="metric-label">Độ mặn cống Cầu Xe ({latest_cau_xe['timestamp'].split()[1]})</div>
+        <div class="metric-label">Độ mặn cống Cầu Xe (Đo lúc: {latest_cau_xe['timestamp'].split()[1]})</div>
     </div>
     """, unsafe_allow_html=True)
 else:
-    col4.markdown('<div class="metric-card">Chưa có dữ liệu độ mặn Cầu Xe</div>', unsafe_allow_html=True)
+    col4.markdown('<div class="metric-card"><div class="metric-label">Chưa có dữ liệu độ mặn Cầu Xe</div></div>', unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ----------------- PHẦN 2: BIỂU ĐỒ TRỰC QUAN HÓA -----------------
-tab1, tab2, tab3 = st.tabs(["📉 Mực Nước Các Cống", "📈 Biến Động Độ Mặn", "🌧️ Lượng Mưa Các Trạm"])
+tab1, tab2, tab3 = st.tabs(["📉 Mực nước tại các cống", "📈 Biến động độ mặn", "🌧️ Lượng mưa tại các trạm"])
 
 with tab1:
-    st.markdown("### So sánh mực nước Thượng lưu (TL) và Hạ lưu (HL) tại các cống vận hành")
+    st.markdown("### So sánh mực nước thượng lưu và hạ lưu tại các cống vận hành")
     if not df_struct.empty:
         df_levels = df_struct[df_struct['parameter_name'].isin(['TL', 'HL', 'HTL', 'HHL'])]
         df_levels_latest = df_levels.sort_values('timestamp').groupby(['structure_name', 'parameter_name']).last().reset_index()
         
         df_levels_latest['parameter_name'] = df_levels_latest['parameter_name'].replace({
-            'TL': 'Thượng Lưu (TL)', 'HTL': 'Thượng Lưu (TL)',
-            'HL': 'Hạ Lưu (HL)', 'HHL': 'Hạ Lưu (HL)'
+            'TL': 'Thượng lưu', 'HTL': 'Thượng lưu',
+            'HL': 'Hạ lưu', 'HHL': 'Hạ lưu'
         })
         
         fig = px.bar(
@@ -258,8 +254,8 @@ with tab1:
             y="value",
             color="parameter_name",
             barmode="group",
-            labels={"structure_name": "Tên Cống/Công Trình", "value": "Mực nước (cm)", "parameter_name": "Vị trí đo"},
-            color_discrete_map={"Thượng Lưu (TL)": "#3b82f6", "Hạ Lưu (HL)": "#f97316"},
+            labels={"structure_name": "Tên cống / công trình", "value": "Mực nước (cm)", "parameter_name": "Vị trí đo"},
+            color_discrete_map={"Thượng lưu": "#3b82f6", "Hạ lưu": "#f97316"},
             height=450,
             template=plotly_template
         )
@@ -336,12 +332,12 @@ with tab3:
 
 # ----------------- PHẦN 3: BẢNG NHẬT KÝ ĐIỀU HÀNH & CHI TIẾT -----------------
 st.markdown("---")
-st.subheader("📋 Nhật ký và Nhật trình số liệu chi tiết")
+st.subheader("📋 Nhật ký và bảng số liệu chi tiết")
 
 col_left, col_right = st.columns(2)
 
 with col_left:
-    st.markdown("#### Trạng thái công trình & Nhật ký điều hành gần nhất")
+    st.markdown("#### Trạng thái hoạt động và vận hành của công trình")
     if not df_struct.empty:
         df_ops = df_struct[df_struct['parameter_name'].isin(['DoMo', 'LuuLuong'])]
         if not df_ops.empty:
@@ -357,7 +353,7 @@ with col_left:
         st.info("Không tìm thấy dữ liệu vận hành.")
 
 with col_right:
-    st.markdown("#### Dự báo thời tiết & Chất lượng không khí chi tiết")
+    st.markdown("#### Dự báo thời tiết và chất lượng không khí")
     if not df_weather.empty:
         st.dataframe(
             df_weather[['timestamp', 'temperature', 'humidity', 'wind_speed', 'aqi_status', 'pm25']].head(10),
@@ -366,8 +362,8 @@ with col_right:
                 "temperature": st.column_config.NumberColumn("Nhiệt độ (°C)", format="%.1f"),
                 "humidity": st.column_config.NumberColumn("Độ ẩm (%)", format="%.0f"),
                 "wind_speed": st.column_config.NumberColumn("Tốc độ gió (m/s)", format="%.1f"),
-                "aqi_status": "Chất lượng không khí (AQI)",
-                "pm25": st.column_config.NumberColumn("PM2.5 (µg/m³)", format="%.1f")
+                "aqi_status": "Chất lượng không khí",
+                "pm25": st.column_config.NumberColumn("Bụi mịn (µg/m³)", format="%.1f")
             },
             width="stretch",
             hide_index=True
