@@ -661,7 +661,7 @@ with tab2:
         st.warning("Không có dữ liệu lịch sử độ mặn.")
 
 with tab3:
-    st.markdown("### Lượng mưa tích lũy đo được tại các trạm đo ở Hải Dương")
+
     if not df_rain.empty:
         df_rain_latest = df_rain.sort_values('timestamp').groupby('station_name').last().reset_index()
         df_rain_latest = df_rain_latest.sort_values('rain_amount', ascending=False)
@@ -706,7 +706,7 @@ with tab3:
             
         st.markdown(f"""
         <div class="metric-card" style="text-align: left; padding: 20px; border-left: 5px solid {metric_color} !important; margin-top: 15px;">
-            <h5 style="margin-top:0px; color:{metric_color} !important; font-weight: bold;">📊 Nhận định phân tích & Đề xuất vận hành lượng mưa trạm</h5>
+            <h5 style="margin-top:0px; color:{metric_color} !important; font-weight: bold;">📊 Nhận định</h5>
             <p style="margin-bottom: 8px;"><b>Qua phân tích số liệu cập nhật trực tuyến nhận thấy:</b> {rain_analysis}</p>
             <p style="margin-bottom: 0px;"><b>Đề xuất kiến nghị các phòng chuyên môn nghiệp vụ Công ty, các đơn vị chi nhánh như sau:</b> {rain_recommendation}</p>
         </div>
