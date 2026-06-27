@@ -145,8 +145,10 @@ st.markdown(f"""
     }}
 
     /* Khắc phục chữ "keyboard_double_" xuất hiện ở nút đóng/mở thanh bên */
-    button[data-testid="collapsedControl"] {{
+    button[data-testid="collapsedControl"] * {{
+        display: none !important;
         font-size: 0px !important;
+        color: transparent !important;
     }}
     button[data-testid="collapsedControl"]::after {{
         content: "▶" !important;
@@ -155,8 +157,10 @@ st.markdown(f"""
         font-weight: bold;
         display: inline-block;
     }}
-    section[data-testid="stSidebar"] button[aria-label="Close sidebar"] {{
+    section[data-testid="stSidebar"] button[aria-label="Close sidebar"] * {{
+        display: none !important;
         font-size: 0px !important;
+        color: transparent !important;
     }}
     section[data-testid="stSidebar"] button[aria-label="Close sidebar"]::after {{
         content: "◀" !important;
