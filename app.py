@@ -12,54 +12,11 @@ import time
 import scraper
 
 st.set_page_config(
-    page_title="Hệ Thống Giám Sát Thủy Lợi Hải Dương & Bắc Hưng Hải",
+    page_title="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương",
     page_icon="🌊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Thêm CSS tùy chỉnh cho đẹp mắt và chuẩn hóa giao diện
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-    }
-    .metric-card {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 15px;
-        text-align: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        transition: transform 0.2s ease-in-out;
-    }
-    .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    }
-    .metric-value {
-        font-size: 24px;
-        font-weight: 700;
-        color: #1a73e8;
-        font-family: 'JetBrains Mono', monospace;
-    }
-    .metric-label {
-        font-size: 14px;
-        color: #5f6368;
-        margin-top: 5px;
-    }
-    .warning-text {
-        color: #d93025;
-        font-weight: bold;
-    }
-    .success-text {
-        color: #188038;
-        font-weight: bold;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 # Khởi động luồng scheduler ngầm nếu chưa khởi động
 if "scheduler_started" not in st.session_state:
@@ -67,37 +24,134 @@ if "scheduler_started" not in st.session_state:
     scraper.start_scheduler()
     st.session_state["scheduler_started"] = True
 
-def get_db_connection():
-    return sqlite3.connect(scraper.DB_PATH)
+# --- CẤU HÌNH GIAO DIỆN SÁNG / TỐI (DAY / NIGHT MODE) ---
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "Ban ngày ☀️"
 
-def load_data():
-    conn = get_db_connection()
-    
-    # Đọc lượng mưa gần nhất
-    df_rain = pd.read_sql_query("SELECT * FROM rainfall ORDER BY timestamp DESC", conn)
-    
-    # Đọc mực nước công trình
-    df_struct = pd.read_sql_query("SELECT * FROM structures ORDER BY timestamp DESC", conn)
-    
-    # Đọc độ mặn
-    df_salinity = pd.read_sql_query("SELECT * FROM salinity ORDER BY timestamp DESC", conn)
-    
-    # Đọc thời tiết
-    df_weather = pd.read_sql_query("SELECT * FROM weather ORDER BY timestamp DESC", conn)
-    
-    conn.close()
-    return df_rain, df_struct, df_salinity, df_weather
-
-# --- MAIN APP LAYOUT ---
-st.title("🌊 Hệ Thống Giám Sát Vận Hành Thủy Lợi Hải Dương")
-st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
-
-# Nút cập nhật và logs ở thanh bên
+# Thanh bên (Sidebar) cài đặt
 with st.sidebar:
     st.image("https://img.icons8.com/color/96/water.png", width=90)
     st.header("Cài đặt hệ thống")
     st.markdown("---")
     
+    # Nút chuyển đổi giao diện sáng tối
+    app_theme = st.radio(
+        "Chế độ hiển thị",
+        ["Ban ngày ☀️", "Ban đêm 🌙"],
+        index=0 if st.session_state["theme"] == "Ban ngày ☀️" else 1
+    )
+    st.session_state["theme"] = app_theme
+    
+    st.markdown("---")
+
+# Định nghĩa bảng màu chuyên nghiệp tùy thuộc vào Chế độ hiển thị
+if st.session_state["theme"] == "Ban đêm 🌙":
+    bg_color = "#0f172a"          # slate-900
+    text_color = "#f1f5f9"        # slate-100
+    card_bg = "#1e293b"           # slate-800
+    card_border = "#334155"       # slate-700
+    metric_color = "#38bdf8"      # sky-400
+    sec_text_color = "#94a3b8"    # slate-400
+    plotly_template = "plotly_dark"
+    plotly_bg = "#1e293b"
+    plotly_text = "#f1f5f9"
+    grid_color = "#334155"
+    axis_color = "#475569"
+else:
+    bg_color = "#ffffff"
+    text_color = "#1e293b"        # slate-800
+    card_bg = "#f8fafc"           # slate-50
+    card_border = "#e2e8f0"       # slate-200
+    metric_color = "#1a73e8"      # blue-600
+    sec_text_color = "#64748b"    # slate-500
+    plotly_template = "plotly_white"
+    plotly_bg = "#f8fafc"
+    plotly_text = "#1e293b"
+    grid_color = "#e2e8f0"
+    axis_color = "#94a3b8"
+
+# Nhúng CSS tùy chỉnh để định hình Times New Roman và phối màu đồng bộ
+st.markdown(f"""
+<style>
+    /* Ép tất cả các thẻ và class sang Times New Roman */
+    html, body, [class*="css"], .stApp, p, span, label, h1, h2, h3, h4, h5, h6, input, button, select, textarea, div {{
+        font-family: 'Times New Roman', Times, serif !important;
+    }}
+    
+    /* Đồng bộ giao diện tổng quan nền sáng / tối */
+    .stApp {{
+        background-color: {bg_color} !important;
+        color: {text_color} !important;
+    }}
+    
+    /* Giao diện màu chữ chính */
+    h1, h2, h3, h4, h5, h6, p, label, .stMarkdown, .stText, span {{
+        color: {text_color} !important;
+    }}
+
+    /* CSS tùy biến cho Sidebar */
+    section[data-testid="stSidebar"] {{
+        background-color: {card_bg} !important;
+        border-right: 1px solid {card_border} !important;
+    }}
+    section[data-testid="stSidebar"] * {{
+        color: {text_color} !important;
+    }}
+    
+    /* Hộp thông số KPI card */
+    .metric-card {{
+        background-color: {card_bg} !important;
+        border: 1px solid {card_border} !important;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        transition: transform 0.2s ease-in-out;
+        color: {text_color} !important;
+    }}
+    .metric-card:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+    }}
+    .metric-value {{
+        font-size: 26px;
+        font-weight: 700;
+        color: {metric_color} !important;
+    }}
+    .metric-label {{
+        font-size: 15px;
+        color: {sec_text_color} !important;
+        margin-top: 5px;
+    }}
+    .warning-text {{
+        color: #ef4444 !important;
+        font-weight: bold;
+    }}
+    .success-text {{
+        color: #22c55e !important;
+        font-weight: bold;
+    }}
+</style>
+""", unsafe_allow_html=True)
+
+def get_db_connection():
+    return sqlite3.connect(scraper.DB_PATH)
+
+def load_data():
+    conn = get_db_connection()
+    df_rain = pd.read_sql_query("SELECT * FROM rainfall ORDER BY timestamp DESC", conn)
+    df_struct = pd.read_sql_query("SELECT * FROM structures ORDER BY timestamp DESC", conn)
+    df_salinity = pd.read_sql_query("SELECT * FROM salinity ORDER BY timestamp DESC", conn)
+    df_weather = pd.read_sql_query("SELECT * FROM weather ORDER BY timestamp DESC", conn)
+    conn.close()
+    return df_rain, df_struct, df_salinity, df_weather
+
+# --- TRANG CHỦ & TIÊU ĐỀ ĐÃ ĐƯỢC THAY THẾ ---
+st.title("🏢 Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương")
+st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
+
+# Tiếp tục nạp thông tin logs bên thanh bên
+with st.sidebar:
     # Hiển thị log cập nhật cuối cùng
     last_update_info = scraper.get_last_update()
     if last_update_info:
@@ -157,7 +211,6 @@ df_an_tho = df_salinity[df_salinity['gate_name'].str.contains("An Thổ|AN THỔ
 if not df_an_tho.empty:
     latest_an_tho = df_an_tho.iloc[0]
     val = latest_an_tho['value']
-    # Cảnh báo mặn nếu > 1.0 ‰
     class_name = "warning-text" if val > 1.0 else "success-text"
     col3.markdown(f"""
     <div class="metric-card">
@@ -190,21 +243,15 @@ tab1, tab2, tab3 = st.tabs(["📉 Mực Nước Các Cống", "📈 Biến Độ
 
 with tab1:
     st.markdown("### So sánh mực nước Thượng lưu (TL) và Hạ lưu (HL) tại các cống vận hành")
-    # Lấy dữ liệu mực nước gần nhất của mỗi công trình
     if not df_struct.empty:
-        # Lọc các dòng mực nước (TL và HL)
         df_levels = df_struct[df_struct['parameter_name'].isin(['TL', 'HL', 'HTL', 'HHL'])]
-        
-        # Nhóm lấy giá trị mới nhất
         df_levels_latest = df_levels.sort_values('timestamp').groupby(['structure_name', 'parameter_name']).last().reset_index()
         
-        # Chuẩn hóa tên parameter_name sang tiếng Việt dễ đọc
         df_levels_latest['parameter_name'] = df_levels_latest['parameter_name'].replace({
             'TL': 'Thượng Lưu (TL)', 'HTL': 'Thượng Lưu (TL)',
             'HL': 'Hạ Lưu (HL)', 'HHL': 'Hạ Lưu (HL)'
         })
         
-        # Vẽ biểu đồ so sánh cột đôi
         fig = px.bar(
             df_levels_latest,
             x="structure_name",
@@ -212,22 +259,26 @@ with tab1:
             color="parameter_name",
             barmode="group",
             labels={"structure_name": "Tên Cống/Công Trình", "value": "Mực nước (cm)", "parameter_name": "Vị trí đo"},
-            color_discrete_map={"Thượng Lưu (TL)": "#1a73e8", "Hạ Lưu (HL)": "#ff9900"},
-            height=450
+            color_discrete_map={"Thượng Lưu (TL)": "#3b82f6", "Hạ Lưu (HL)": "#f97316"},
+            height=450,
+            template=plotly_template
         )
         fig.update_layout(
-            font_family="Inter",
+            font_family="Times New Roman",
             plot_bgcolor="rgba(0,0,0,0)",
-            xaxis_tickangle=-45
+            paper_bgcolor="rgba(0,0,0,0)",
+            font_color=plotly_text,
+            xaxis_tickangle=-45,
+            xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
+            yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.warning("Không có dữ liệu mực nước để hiển thị.")
 
 with tab2:
     st.markdown("### Lịch sử thay đổi độ mặn tại khu vực cửa sông (An Thổ và Cầu Xe)")
     if not df_salinity.empty:
-        # Sắp xếp theo thời gian tăng dần để vẽ đường tuyến tính
         df_sal_sorted = df_salinity.sort_values('timestamp')
         
         fig_sal = px.line(
@@ -237,22 +288,26 @@ with tab2:
             color="gate_name",
             labels={"timestamp": "Thời gian", "value": "Độ mặn (‰ hoặc ppt)", "gate_name": "Trạm đo"},
             markers=True,
-            color_discrete_sequence=["#d93025", "#188038"],
-            height=450
+            color_discrete_sequence=["#ef4444", "#22c55e"],
+            height=450,
+            template=plotly_template
         )
         fig_sal.update_layout(
-            font_family="Inter",
+            font_family="Times New Roman",
             plot_bgcolor="rgba(0,0,0,0)",
-            hovermode="x unified"
+            paper_bgcolor="rgba(0,0,0,0)",
+            font_color=plotly_text,
+            hovermode="x unified",
+            xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
+            yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig_sal, use_container_width=True)
+        st.plotly_chart(fig_sal, width="stretch")
     else:
         st.warning("Không có dữ liệu lịch sử độ mặn.")
 
 with tab3:
     st.markdown("### Lượng mưa tích lũy đo được tại các trạm đo ở Hải Dương")
     if not df_rain.empty:
-        # Lấy lượng mưa gần nhất của các trạm
         df_rain_latest = df_rain.sort_values('timestamp').groupby('station_name').last().reset_index()
         df_rain_latest = df_rain_latest.sort_values('rain_amount', ascending=False)
         
@@ -262,15 +317,20 @@ with tab3:
             y="rain_amount",
             labels={"station_name": "Trạm đo lượng mưa", "rain_amount": "Lượng mưa tích lũy (mm)"},
             color="rain_amount",
-            color_continuous_scale="Blues",
-            height=450
+            color_continuous_scale="Blues" if st.session_state["theme"] == "Ban ngày ☀️" else "Cividis",
+            height=450,
+            template=plotly_template
         )
         fig_rain.update_layout(
-            font_family="Inter",
+            font_family="Times New Roman",
             plot_bgcolor="rgba(0,0,0,0)",
-            xaxis_tickangle=-45
+            paper_bgcolor="rgba(0,0,0,0)",
+            font_color=plotly_text,
+            xaxis_tickangle=-45,
+            xaxis=dict(gridcolor=grid_color, linecolor=axis_color),
+            yaxis=dict(gridcolor=grid_color, linecolor=axis_color)
         )
-        st.plotly_chart(fig_rain, use_container_width=True)
+        st.plotly_chart(fig_rain, width="stretch")
     else:
         st.warning("Không có dữ liệu lượng mưa để hiển thị.")
 
@@ -282,12 +342,10 @@ col_left, col_right = st.columns(2)
 
 with col_left:
     st.markdown("#### Trạng thái công trình & Nhật ký điều hành gần nhất")
-    # Lấy thông số độ mở cống và lưu lượng
     if not df_struct.empty:
         df_ops = df_struct[df_struct['parameter_name'].isin(['DoMo', 'LuuLuong'])]
         if not df_ops.empty:
             df_ops_latest = df_ops.sort_values('timestamp').groupby(['structure_name', 'parameter_name']).last().reset_index()
-            # Pivot bảng để dễ nhìn
             df_ops_pivot = df_ops_latest.pivot(index='structure_name', columns='parameter_name', values='value_str').reset_index()
             df_ops_pivot.columns = ['Tên công trình', 'Độ mở cống (cm)', 'Lưu lượng xả (m3/s)']
             df_ops_pivot = df_ops_pivot.fillna("-")
@@ -301,7 +359,6 @@ with col_left:
 with col_right:
     st.markdown("#### Dự báo thời tiết & Chất lượng không khí chi tiết")
     if not df_weather.empty:
-        # Lọc các dòng thời tiết trong vòng 24h gần nhất
         st.dataframe(
             df_weather[['timestamp', 'temperature', 'humidity', 'wind_speed', 'aqi_status', 'pm25']].head(10),
             column_config={
