@@ -277,7 +277,7 @@ if not df_weather.empty:
     col1.markdown(f"""
     <div class="metric-card">
         <div class="metric-value">{latest_w['temperature']:.1f} °C</div>
-        <div class="metric-label">Thời tiết Hải Dương (Cảm giác: {latest_w['feel_temperature']:.1f}°C)</div>
+        <div class="metric-label">Thời tiết phía Tây thành phố Hải Phòng (Cảm giác: {latest_w['feel_temperature']:.1f}°C)</div>
     </div>
     """, unsafe_allow_html=True)
 else:
