@@ -88,6 +88,8 @@ else:
 
 # Nhúng các thẻ meta Open Graph để hiển thị bản xem trước đẹp khi chia sẻ qua Zalo/Facebook/Twitter
 st.markdown("""
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://congtytnhhmtvktcttlhaiduong.streamlit.app/" />
 <meta property="og:title" content="Công ty TNHH MTV Khai thác công trình Thủy lợi Hải Dương" />
