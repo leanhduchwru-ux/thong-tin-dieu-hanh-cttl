@@ -240,7 +240,7 @@ st.markdown(f"""
     }}
     button[data-testid="collapsedControl"]::after,
     [data-testid="stHeader"] > button::after {{
-        content: "▶" !important;
+        content: "⏩" !important;
         position: absolute !important;
         left: 50% !important;
         top: 50% !important;
@@ -258,7 +258,7 @@ st.markdown(f"""
     button[aria-label="Close"]::after,
     button[aria-label="Collapse sidebar"]::after,
     button[aria-label="Close sidebar"]::after {{
-        content: "◀" !important;
+        content: "⏪" !important;
         position: absolute !important;
         left: 50% !important;
         top: 50% !important;
