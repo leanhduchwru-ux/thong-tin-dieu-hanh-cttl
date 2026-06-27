@@ -202,12 +202,15 @@ st.markdown(f"""
         font-weight: bold;
     }}
 
-    /* Sửa thành block để hiển thị lại thanh Sidebar và nút đóng/mở */
+    /* Ẩn hoàn toàn thanh Sidebar và các nút bấm đóng/mở để không hiển thị nữa */
     [data-testid="stSidebar"] {{
-        display: block !important;
+        display: none !important;
     }}
     [data-testid="stSidebarCollapsedControl"] {{
-        display: block !important;
+        display: none !important;
+    }}
+    button[data-testid="collapsedControl"] {{
+        display: none !important;
     }}
 
     /* Định dạng nút mở rộng/thu gọn cài đặt hệ thống (Sidebar toggle) thành nút tròn có màu nổi bật */
