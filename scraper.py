@@ -374,83 +374,94 @@ def scrape_bac_hung_hai():
     return f"Đã quét Bắc Hưng Hải: {salinity_parsed} trạm độ mặn, {structures_parsed} thông số mực nước theo giờ."
 
 def scrape_weather_haiduong():
-    """Thu thập thông tin thời tiết và AQI từ vnbaolut.net"""
-    url = "https://vnbaolut.net/thoi-tiet-hai-duong"
+    """Thu thập thông tin thời tiết từ Open-Meteo API (chính xác, miễn phí) và AQI từ vnbaolut.net"""
     headers = {"User-Agent": USER_AGENT}
-    
-    # Tự động thử lại 3 lần nếu máy chủ phản hồi chậm hoặc timeout
-    response = None
-    for attempt in range(3):
-        try:
-            response = requests.get(url, headers=headers, timeout=30, verify=False)
-            if response.status_code == 200:
-                break
-        except (requests.exceptions.RequestException, Exception) as e:
-            if attempt == 2:
-                raise Exception(f"Lỗi kết nối vnbaolut.net sau 3 lần thử: {str(e)}")
-            time.sleep(2)
-            
-    if not response or response.status_code != 200:
-        status_code = response.status_code if response else "Không có phản hồi"
-        raise Exception(f"Không thể truy cập vnbaolut.net. Mã lỗi: {status_code}")
-        
-    soup = BeautifulSoup(response.text, 'html.parser')
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
     now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:00:00")
     
-    # 1. Lấy nhiệt độ chính
-    temp_tag = soup.find(class_="current-temp") or soup.find(string=re.compile(r'\d+\.\d+°|\d+°'))
-    temp_val = 30.0 # mặc định nếu lỗi
-    if temp_tag:
-        raw_text = temp_tag.get_text() if hasattr(temp_tag, 'get_text') else str(temp_tag)
-        val = clean_value(raw_text)
-        if val is not None:
-            temp_val = val
-            
-    # Lấy cảm giác như, độ ẩm, gió
-    feel_temp = temp_val
+    # === NGUỒN CHÍNH: Open-Meteo API (miễn phí, không cần API key) ===
+    # Tọa độ Hải Dương: 20.9373°N, 106.3146°E
+    temp_val = 30.0
+    feel_temp = 30.0
     humidity = 60.0
     wind = 3.0
     desc = "Nhiều mây"
     
-    for tag in soup.find_all(string=re.compile(r'Cảm giác như|Độ ẩm|Gió')) :
-        parent_text = tag.parent.get_text()
-        if "Cảm giác như" in parent_text:
-            val = clean_value(parent_text)
-            if val: feel_temp = val
-        elif "Độ ẩm" in parent_text:
-            val = clean_value(parent_text)
-            if val: humidity = val
-        elif "Gió" in parent_text:
-            val = clean_value(parent_text)
-            if val: wind = val
-
-    # 2. Lấy chất lượng không khí (AQI)
-    aqi_status = "Bình thường"
+    try:
+        meteo_url = "https://api.open-meteo.com/v1/forecast?latitude=20.9373&longitude=106.3146&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&timezone=Asia%2FBangkok"
+        meteo_resp = None
+        for attempt in range(3):
+            try:
+                meteo_resp = requests.get(meteo_url, timeout=15)
+                if meteo_resp.status_code == 200:
+                    break
+            except Exception:
+                if attempt < 2:
+                    time.sleep(2)
+        
+        if meteo_resp and meteo_resp.status_code == 200:
+            data = meteo_resp.json()
+            current = data.get("current", {})
+            if current.get("temperature_2m") is not None:
+                temp_val = float(current["temperature_2m"])
+            if current.get("apparent_temperature") is not None:
+                feel_temp = float(current["apparent_temperature"])
+            if current.get("relative_humidity_2m") is not None:
+                humidity = float(current["relative_humidity_2m"])
+            if current.get("wind_speed_10m") is not None:
+                wind = float(current["wind_speed_10m"])
+            
+            # Chuyển đổi mã thời tiết WMO sang mô tả tiếng Việt
+            wmo_code = current.get("weather_code", 3)
+            wmo_map = {
+                0: "Trời quang đãng", 1: "Ít mây", 2: "Mây rải rác", 3: "Nhiều mây",
+                45: "Sương mù", 48: "Sương mù đọng băng",
+                51: "Mưa phùn nhẹ", 53: "Mưa phùn", 55: "Mưa phùn dày",
+                61: "Mưa nhỏ", 63: "Mưa vừa", 65: "Mưa to",
+                71: "Tuyết nhẹ", 73: "Tuyết vừa", 75: "Tuyết dày",
+                80: "Mưa rào nhẹ", 81: "Mưa rào vừa", 82: "Mưa rào to",
+                95: "Giông bão", 96: "Giông kèm mưa đá nhỏ", 99: "Giông kèm mưa đá lớn"
+            }
+            desc = wmo_map.get(wmo_code, "Nhiều mây")
+    except Exception:
+        pass  # Giữ giá trị mặc định nếu API lỗi
+    
+    # === NGUỒN PHỤ: vnbaolut.net cho AQI ===
+    aqi_status = "Trung bình"
     pm25 = 15.0
     pm10 = 25.0
     
-    aqi_section = soup.find(string=re.compile(r'Chất lượng không khí tại Hải Dương'))
-    if aqi_section:
-        parent = aqi_section.parent
-        # Tìm trạng thái
-        status_tag = parent.find_next(string=re.compile(r'Tốt|Trung bình|Kém|Rất kém'))
-        if status_tag:
-            aqi_status = status_tag.strip()
-            
-        # Tìm PM2.5 và PM10
-        pm25_tag = parent.find_next(string=re.compile(r'PM2\.5'))
-        if pm25_tag:
-            # Thường giá trị đứng kế tiếp hoặc trong text
-            pm25_val = clean_value(pm25_tag.parent.get_text())
-            if pm25_val: pm25 = pm25_val
-            
-        pm10_tag = parent.find_next(string=re.compile(r'PM10'))
-        if pm10_tag:
-            pm10_val = clean_value(pm10_tag.parent.get_text())
-            if pm10_val: pm10 = pm10_val
+    try:
+        aqi_url = "https://vnbaolut.net/thoi-tiet-hai-duong"
+        response = None
+        for attempt in range(3):
+            try:
+                response = requests.get(aqi_url, headers=headers, timeout=30, verify=False)
+                if response.status_code == 200:
+                    break
+            except Exception:
+                if attempt < 2:
+                    time.sleep(2)
+        
+        if response and response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            aqi_section = soup.find(string=re.compile(r'Chất lượng không khí tại Hải Dương'))
+            if aqi_section:
+                parent = aqi_section.parent
+                status_tag = parent.find_next(string=re.compile(r'Tốt|Trung bình|Kém|Rất kém'))
+                if status_tag:
+                    aqi_status = status_tag.strip()
+                pm25_tag = parent.find_next(string=re.compile(r'PM2\.5'))
+                if pm25_tag:
+                    pm25_val = clean_value(pm25_tag.parent.get_text())
+                    if pm25_val: pm25 = pm25_val
+                pm10_tag = parent.find_next(string=re.compile(r'PM10'))
+                if pm10_tag:
+                    pm10_val = clean_value(pm10_tag.parent.get_text())
+                    if pm10_val: pm10 = pm10_val
+    except Exception:
+        pass  # Giữ giá trị mặc định AQI nếu lỗi
             
     cursor.execute('''
         INSERT OR REPLACE INTO weather (timestamp, temperature, feel_temperature, humidity, wind_speed, weather_desc, aqi_status, pm25, pm10)
@@ -459,7 +470,7 @@ def scrape_weather_haiduong():
     
     conn.commit()
     conn.close()
-    return f"Đã quét thời tiết Hải Dương: {temp_val}°C, AQI: {aqi_status}."
+    return f"Đã quét thời tiết Hải Dương: {temp_val}°C, {desc}, Độ ẩm: {humidity}%, Gió: {wind} km/h, AQI: {aqi_status}."
 
 def get_simulated_data():
     """Tạo dữ liệu mô phỏng khi không thể scrape hoặc để làm phong phú dữ liệu quá khứ"""

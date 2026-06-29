@@ -458,10 +458,11 @@ with col_theme_right:
 
 # Nút cập nhật thông tin trực tiếp trên trang chính
 if st.button("🔄 Cập nhật thông tin trực tuyến xem ngay", use_container_width=True):
-    with st.spinner("Đang kết nối và tải dữ liệu mới..."):
+    with st.spinner("⏳ Đang kết nối tới các nguồn dữ liệu và tải thông tin mới nhất..."):
         msg = scraper.run_all_scrapers()
-        st.success("Đã hoàn tất tải dữ liệu mới nhất!")
-        st.rerun()
+    st.success(f"✅ {msg}")
+    time.sleep(2)
+    st.rerun()
 
 st.markdown("""
 **Nguồn dữ liệu:**
