@@ -92,6 +92,12 @@ def init_db():
         )
     ''')
     
+    # [HOTFIX] Tự động dọn dẹp dữ liệu mô phỏng sai của ngày 2026-06-29 do phiên bản cũ sinh ra trên Cloud
+    cursor.execute("DELETE FROM weather WHERE timestamp LIKE '2026-06-29%'")
+    cursor.execute("DELETE FROM salinity WHERE timestamp LIKE '2026-06-29%'")
+    cursor.execute("DELETE FROM rainfall WHERE timestamp LIKE '2026-06-29%'")
+    cursor.execute("DELETE FROM structures WHERE timestamp LIKE '2026-06-29%'")
+    
     conn.commit()
     conn.close()
 
@@ -479,8 +485,8 @@ def get_simulated_data():
     
     today = datetime.date.today()
     
-    # 1. Tạo dữ liệu thời tiết 5 ngày qua
-    for d in range(5):
+    # 1. Tạo dữ liệu thời tiết cho 5 ngày QUÁ KHỨ (bắt đầu từ hôm qua, KHÔNG ghi đè ngày hôm nay)
+    for d in range(1, 6):
         day_date = today - datetime.timedelta(days=d)
         date_str = day_date.strftime("%Y-%m-%d")
         for hour in [1, 7, 13, 19]:
@@ -494,48 +500,46 @@ def get_simulated_data():
             pm10 = 95.0 - d*8 + (hour % 2)*8
             
             cursor.execute('''
-                INSERT OR REPLACE INTO weather (timestamp, temperature, feel_temperature, humidity, wind_speed, weather_desc, aqi_status, pm25, pm10)
+                INSERT OR IGNORE INTO weather (timestamp, temperature, feel_temperature, humidity, wind_speed, weather_desc, aqi_status, pm25, pm10)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (ts, temp, feel, hum, wind, "Nhiều mây, có mưa rào", aqi, pm25, pm10))
             
-    # 2. Tạo dữ liệu độ mặn 5 ngày qua cho Cống An Thổ, Cống Cầu Xe
-    for d in range(5):
+    # 2. Tạo dữ liệu độ mặn cho 5 ngày QUÁ KHỨ (KHÔNG ghi đè ngày hôm nay)
+    for d in range(1, 6):
         day_date = today - datetime.timedelta(days=d)
         date_str = day_date.strftime("%Y-%m-%d")
         for hour in [1, 7, 13, 19]:
             ts = f"{date_str} {hour:02d}:00:00"
-            # An Thổ dao động quanh 4.0 - 5.0 ppt
             val_an_tho = 4.2 + (hour % 3) * 0.2 - d * 0.1
-            # Cầu xe ngọt hơn nhiều, 0.05 - 0.15 ppt
             val_cau_xe = 0.08 + (hour % 2) * 0.02
             
             cursor.execute('''
-                INSERT OR REPLACE INTO salinity (gate_name, timestamp, value, source)
+                INSERT OR IGNORE INTO salinity (gate_name, timestamp, value, source)
                 VALUES (?, ?, ?, ?)
             ''', ("Cống An Thổ", ts, val_an_tho, "simulated"))
             cursor.execute('''
-                INSERT OR REPLACE INTO salinity (gate_name, timestamp, value, source)
+                INSERT OR IGNORE INTO salinity (gate_name, timestamp, value, source)
                 VALUES (?, ?, ?, ?)
             ''', ("Cống Cầu Xe", ts, val_cau_xe, "simulated"))
             
-    # 3. Tạo dữ liệu lượng mưa trạm Hải Dương
+    # 3. Tạo dữ liệu lượng mưa cho 5 ngày QUÁ KHỨ
     stations = ["VP Công ty", "VP KTCTTL H.Chí Linh", "Hồ Phú Lợi", "TB Kỳ Đặc", "TB Vạn Thắng", "TB Thanh Quang", "TB Chu Đậu", "TB Văn Thai"]
     for station in stations:
-        for d in range(5):
+        for d in range(1, 6):
             day_date = today - datetime.timedelta(days=d)
             date_str = day_date.strftime("%Y-%m-%d")
             ts = f"{date_str} 00:00:00"
             rain = 0.0 if d in [1, 3] else (2.5 * (d + 1) if "Thanh Quang" in station or "Kỳ Đặc" in station else 0.5 * d)
             
             cursor.execute('''
-                INSERT OR REPLACE INTO rainfall (station_name, timestamp, rain_amount, source)
+                INSERT OR IGNORE INTO rainfall (station_name, timestamp, rain_amount, source)
                 VALUES (?, ?, ?, ?)
             ''', (station, ts, rain, "simulated"))
             
-    # 4. Tạo dữ liệu mực nước các cống
+    # 4. Tạo dữ liệu mực nước các cống cho 5 ngày QUÁ KHỨ
     gates = ["X. QUAN", "BÁO ĐÁP", "KÊNH CẦU", "LỰC ĐIỀN", "C.TRANH", "BÁ THUỶ", "C. NEO", "CẦU CẤT", "CẦU XE", "AN THỔ"]
     for gate in gates:
-        for d in range(5):
+        for d in range(1, 6):
             day_date = today - datetime.timedelta(days=d)
             date_str = day_date.strftime("%Y-%m-%d")
             for hour in [1, 7, 13, 19]:
@@ -547,11 +551,11 @@ def get_simulated_data():
                 val_hl = base_hl + (hour % 2) * 15 - d * 3 if "XE" in gate or "THỔ" in gate else base_hl + (hour % 2) * 4
                 
                 cursor.execute('''
-                    INSERT OR REPLACE INTO structures (structure_name, parameter_name, timestamp, value, value_str, source)
+                    INSERT OR IGNORE INTO structures (structure_name, parameter_name, timestamp, value, value_str, source)
                     VALUES (?, ?, ?, ?, ?, ?)
                 ''', (gate, "TL", ts, val_tl, str(val_tl), "simulated"))
                 cursor.execute('''
-                    INSERT OR REPLACE INTO structures (structure_name, parameter_name, timestamp, value, value_str, source)
+                    INSERT OR IGNORE INTO structures (structure_name, parameter_name, timestamp, value, value_str, source)
                     VALUES (?, ?, ?, ?, ?, ?)
                 ''', (gate, "HL", ts, val_hl, str(val_hl), "simulated"))
                 
