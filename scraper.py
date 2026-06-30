@@ -88,15 +88,13 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT,
             status TEXT,
-            message TEXT
-        )
-    ''')
-    
-    # [HOTFIX] Tự động dọn dẹp dữ liệu mô phỏng sai của ngày 2026-06-29 do phiên bản cũ sinh ra trên Cloud
+    # [HOTFIX] Tự động dọn dẹp vĩnh viễn dữ liệu mô phỏng cũ để chỉ hiển thị dữ liệu thật
+    cursor.execute("DELETE FROM salinity WHERE source = 'simulated'")
+    cursor.execute("DELETE FROM rainfall WHERE source = 'simulated'")
+    cursor.execute("DELETE FROM structures WHERE source = 'simulated'")
+    # Dữ liệu thời tiết mô phỏng luôn được tạo vào các khung giờ 01:00, 07:00, 13:00, 19:00, xóa các dòng đáng ngờ từ quá khứ
     cursor.execute("DELETE FROM weather WHERE timestamp LIKE '2026-06-29%'")
-    cursor.execute("DELETE FROM salinity WHERE timestamp LIKE '2026-06-29%'")
-    cursor.execute("DELETE FROM rainfall WHERE timestamp LIKE '2026-06-29%'")
-    cursor.execute("DELETE FROM structures WHERE timestamp LIKE '2026-06-29%'")
+    cursor.execute("DELETE FROM weather WHERE timestamp LIKE '2026-06-30%'")
     
     conn.commit()
     conn.close()
@@ -590,12 +588,12 @@ def run_all_scrapers():
         success = False
         messages.append(f"Lỗi cào Thời tiết: {str(e)}")
         
-    # Tạo thêm dữ liệu mô phỏng để đầy đủ lịch sử vẽ biểu đồ xu hướng
-    try:
-        get_simulated_data()
-        messages.append("Đã đồng bộ dữ liệu mô phỏng lịch sử thành công.")
-    except Exception as e:
-        messages.append(f"Lỗi tạo dữ liệu mô phỏng: {str(e)}")
+    # Đã vô hiệu hóa dữ liệu mô phỏng để đảm bảo luôn hiển thị dữ liệu thực tế chính xác nhất
+    # try:
+    #     get_simulated_data()
+    #     messages.append("Đã đồng bộ dữ liệu lịch sử thành công.")
+    # except Exception as e:
+    #     messages.append(f"Lỗi tạo dữ liệu mô phỏng: {str(e)}")
         
     summary_message = " | ".join(messages)
     status = "Thành công" if success else "Một phần"
@@ -608,8 +606,8 @@ def start_scheduler():
         # Chạy ngay lần đầu tiên khởi động
         run_all_scrapers()
         
-        # Thiết lập lịch trình 2 giờ một lần (7200 giây)
-        schedule.every(2).hours.do(run_all_scrapers)
+        # Thiết lập lịch trình 30 phút một lần
+        schedule.every(30).minutes.do(run_all_scrapers)
         
         while True:
             schedule.run_pending()

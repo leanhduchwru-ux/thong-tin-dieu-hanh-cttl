@@ -472,7 +472,7 @@ st.markdown("""
 4. [https://bhh.com.vn/](https://bhh.com.vn/)
 """)
 
-st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **2 giờ**.")
+st.markdown("Hệ thống tự động thu thập và phân tích dữ liệu mực nước, lượng mưa và độ mặn định kỳ mỗi **30 phút**.")
 
 # Cài đặt thanh bên với các liên kết nguồn dữ liệu chính thức
 with st.sidebar:
