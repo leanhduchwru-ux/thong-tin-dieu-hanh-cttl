@@ -88,6 +88,10 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT,
             status TEXT,
+            message TEXT
+        )
+    ''')
+    
     # [HOTFIX] Tự động dọn dẹp vĩnh viễn dữ liệu mô phỏng cũ để chỉ hiển thị dữ liệu thật
     cursor.execute("DELETE FROM salinity WHERE source = 'simulated'")
     cursor.execute("DELETE FROM rainfall WHERE source = 'simulated'")
